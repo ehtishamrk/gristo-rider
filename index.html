@@ -5,492 +5,240 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#080808">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <title>Rider Portal</title>
 <link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* ══════════════════════════════════════════════
-   DESIGN TOKENS — mirrors the existing system
-══════════════════════════════════════════════ */
 :root {
-  --bg:       #080808;
-  --s1:       #111111;
-  --s2:       #181818;
-  --s3:       #212121;
-  --s4:       #2A2A2A;
-  --bd:       rgba(255,255,255,0.07);
-  --bd2:      rgba(255,255,255,0.13);
-  --gold:     #C8922A;
-  --gold-l:   #E8B84B;
-  --gold-d:   rgba(200,146,42,0.13);
-  --text:     #F0EBE2;
-  --tm:       #8A8070;
-  --td:       #4E4840;
-  --green:    #3D9B6A;
-  --green-d:  rgba(61,155,106,0.14);
-  --blue:     #4A7FC8;
-  --blue-d:   rgba(74,127,200,0.14);
-  --red:      #C04040;
-  --red-d:    rgba(192,64,64,0.14);
-  --amber:    #C8922A;
-  --amber-d:  rgba(200,146,42,0.14);
-  --purple:   #9B6EC8;
-  --r:        12px;
-  --rs:       8px;
+  --bg:      #080808;
+  --s1:      #111111;
+  --s2:      #181818;
+  --s3:      #212121;
+  --s4:      #2A2A2A;
+  --bd:      rgba(255,255,255,0.07);
+  --bd2:     rgba(255,255,255,0.13);
+  --gold:    #C8922A;
+  --gold-l:  #E8B84B;
+  --gold-d:  rgba(200,146,42,0.13);
+  --text:    #F0EBE2;
+  --tm:      #8A8070;
+  --td:      #4E4840;
+  --green:   #3D9B6A;
+  --green-d: rgba(61,155,106,0.14);
+  --blue:    #4A7FC8;
+  --blue-d:  rgba(74,127,200,0.14);
+  --red:     #C04040;
+  --red-d:   rgba(192,64,64,0.14);
+  --amber:   #C8922A;
+  --amber-d: rgba(200,146,42,0.14);
+  --r:       12px;
+  --rs:      8px;
 }
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 html, body { height:100%; overflow:hidden; }
 body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-size:14px; line-height:1.5; }
-a { color:inherit; text-decoration:none; }
-button { font-family:'DM Sans',sans-serif; }
 
-/* ══ LOGIN ══════════════════════════════════ */
-#login-overlay {
-  position:fixed; inset:0; background:var(--bg); z-index:1000;
-  display:flex; align-items:center; justify-content:center;
-  animation: fadeIn .4s ease;
-}
-@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-.login-wrap {
-  width:380px; max-width:92vw;
-  background:var(--s1); border:1px solid var(--bd);
-  border-radius:20px; padding:48px 36px;
-  text-align:center;
-}
-.login-logo {
-  font-family:'Cormorant Garamond',serif;
-  font-size:42px; font-weight:700;
-  color:var(--gold); letter-spacing:6px; margin-bottom:4px;
-}
-.login-role {
-  font-size:10px; letter-spacing:3.5px;
-  text-transform:uppercase; color:var(--td); margin-bottom:36px;
-}
-.login-field {
-  width:100%; background:var(--s2); border:1px solid var(--bd);
-  border-radius:var(--r); color:var(--text); font-size:15px;
-  font-family:'DM Sans',sans-serif; padding:13px 16px;
-  outline:none; transition:border-color .2s; margin-bottom:12px;
-}
+/* ── LOGIN ── */
+#login-overlay { position:fixed; inset:0; background:var(--bg); z-index:1000; display:flex; align-items:center; justify-content:center; }
+.login-wrap { width:380px; max-width:92vw; background:var(--s1); border:1px solid var(--bd); border-radius:20px; padding:48px 36px; text-align:center; }
+.login-logo { font-family:'Cormorant Garamond',serif; font-size:42px; font-weight:700; color:var(--gold); letter-spacing:6px; margin-bottom:4px; }
+.login-role { font-size:10px; letter-spacing:3.5px; text-transform:uppercase; color:var(--td); margin-bottom:36px; }
+.login-field { width:100%; background:var(--s2); border:1px solid var(--bd); border-radius:var(--r); color:var(--text); font-size:15px; font-family:'DM Sans',sans-serif; padding:13px 16px; outline:none; transition:border-color .2s; margin-bottom:12px; }
 .login-field:focus { border-color:rgba(200,146,42,.45); }
 .login-field::placeholder { color:var(--td); }
 .login-err { font-size:12px; color:var(--red); min-height:18px; margin-bottom:10px; }
-.btn-login {
-  width:100%; background:var(--gold); color:#0A0A0A;
-  border:none; border-radius:var(--r); padding:14px;
-  font-size:14px; font-weight:700; cursor:pointer;
-  transition:background .2s; letter-spacing:.5px;
-}
+.btn-login { width:100%; background:var(--gold); color:#0A0A0A; border:none; border-radius:var(--r); padding:14px; font-size:14px; font-weight:700; cursor:pointer; transition:background .2s; letter-spacing:.5px; }
 .btn-login:hover { background:var(--gold-l); }
 .btn-login:disabled { opacity:.5; cursor:not-allowed; }
 .cf-wrap { margin-bottom:14px; display:flex; justify-content:center; }
 
-/* ══ APP SHELL ══════════════════════════════ */
-#rider-app { display:none; height:100vh; flex-direction:column; }
+/* ── APP SHELL ── */
+#rider-app { display:none; height:100vh; flex-direction:column; overflow:hidden; }
 
-/* ══ TOPBAR ══════════════════════════════════ */
-#topbar {
-  background:var(--s1); border-bottom:1px solid var(--bd);
-  padding:0 18px; height:56px;
-  display:flex; align-items:center; gap:12px;
-  flex-shrink:0; z-index:10;
-}
-.tb-brand {
-  font-family:'Cormorant Garamond',serif;
-  font-size:20px; font-weight:700; color:var(--gold); letter-spacing:3px;
-}
-.tb-role {
-  font-size:10px; letter-spacing:2px;
-  text-transform:uppercase; color:var(--td);
-  background:var(--s3); border:1px solid var(--bd);
-  border-radius:100px; padding:3px 10px;
-}
+/* ── TOPBAR ── */
+#topbar { background:var(--s1); border-bottom:1px solid var(--bd); padding:0 18px; height:54px; display:flex; align-items:center; gap:12px; flex-shrink:0; z-index:10; }
+.tb-brand { font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:700; color:var(--gold); letter-spacing:3px; }
+.tb-role { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--td); background:var(--s3); border:1px solid var(--bd); border-radius:100px; padding:3px 10px; }
 .tb-spacer { flex:1; }
-.tb-status-dot {
-  width:8px; height:8px; border-radius:50%;
-  background:var(--green); flex-shrink:0;
-  box-shadow:0 0 0 3px var(--green-d);
-  transition: background .3s;
-}
-.tb-status-dot.offline { background:var(--td); box-shadow:none; }
 .tb-time { font-size:12px; color:var(--td); font-family:'DM Mono',monospace; }
-.tb-logout {
-  font-size:12px; color:var(--tm);
-  background:none; border:none; cursor:pointer;
-  padding:5px 10px; border-radius:var(--rs); transition:background .15s;
-}
+.tb-logout { font-size:12px; color:var(--tm); background:none; border:none; cursor:pointer; padding:5px 10px; border-radius:var(--rs); transition:background .15s; }
 .tb-logout:hover { background:var(--s3); }
 
-/* ══ ONLINE TOGGLE BAR ══════════════════════ */
-#online-bar {
-  background:var(--s2); border-bottom:1px solid var(--bd);
-  padding:10px 18px; display:flex; align-items:center;
-  gap:12px; flex-shrink:0;
-}
-.online-label { font-size:13px; font-weight:600; flex:1; }
-.online-sub { font-size:11px; color:var(--tm); }
-.toggle { position:relative; display:inline-block; width:44px; height:24px; flex-shrink:0; }
-.toggle input { opacity:0; width:0; height:0; }
-.toggle-slider {
-  position:absolute; inset:0; cursor:pointer;
-  background:var(--s4); border-radius:100px;
-  transition:.3s; border:1px solid var(--bd);
-}
-.toggle-slider:before {
-  content:''; position:absolute;
-  width:18px; height:18px; left:3px; bottom:2px;
-  background:var(--tm); border-radius:50%; transition:.3s;
-}
-input:checked + .toggle-slider { background:var(--green); border-color:var(--green); }
-input:checked + .toggle-slider:before { transform:translateX(19px); background:#fff; }
+/* ── STATUS BAR ── */
+#status-bar { padding:10px 18px; display:flex; align-items:center; gap:10px; flex-shrink:0; border-bottom:1px solid var(--bd); background:var(--s2); }
+.status-indicator { display:flex; align-items:center; gap:8px; flex:1; }
+.status-dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; transition:all .3s; }
+.status-dot.available  { background:var(--green);  box-shadow:0 0 0 3px rgba(61,155,106,.2); }
+.status-dot.on_delivery{ background:var(--blue);   box-shadow:0 0 0 3px rgba(74,127,200,.2); animation:delivPulse 2s ease-in-out infinite; }
+.status-dot.on_break   { background:var(--amber);  box-shadow:0 0 0 3px rgba(200,146,42,.2); }
+.status-dot.offline    { background:var(--td);     box-shadow:none; }
+@keyframes delivPulse { 0%,100%{box-shadow:0 0 0 3px rgba(74,127,200,.2);} 50%{box-shadow:0 0 0 6px rgba(74,127,200,.1);} }
+.status-text { font-size:13px; font-weight:600; }
+.status-sub  { font-size:11px; color:var(--tm); }
+.btn-break { padding:7px 14px; border-radius:100px; border:1px solid rgba(200,146,42,.3); background:var(--amber-d); color:var(--amber); font-size:11px; font-weight:700; cursor:pointer; transition:all .15s; font-family:'DM Sans',sans-serif; white-space:nowrap; }
+.btn-break:hover { background:rgba(200,146,42,.22); }
+.btn-break:disabled { opacity:.45; cursor:not-allowed; }
+.btn-endbreak { padding:7px 14px; border-radius:100px; border:1px solid rgba(61,155,106,.3); background:var(--green-d); color:var(--green); font-size:11px; font-weight:700; cursor:pointer; transition:all .15s; font-family:'DM Sans',sans-serif; }
 
-/* ══ NAV TABS ════════════════════════════════ */
-#nav-tabs {
-  background:var(--s1); border-bottom:1px solid var(--bd);
-  display:flex; padding:0 18px; gap:2px;
-  overflow-x:auto; scrollbar-width:none; flex-shrink:0;
-}
+/* ── BREAK REQUEST BANNER ── */
+#break-banner { display:none; background:var(--amber-d); border-bottom:1px solid rgba(200,146,42,.25); padding:10px 18px; font-size:13px; color:var(--amber); flex-shrink:0; text-align:center; }
+#break-banner.show { display:block; }
+
+/* ── NAV TABS ── */
+#nav-tabs { background:var(--s1); border-bottom:1px solid var(--bd); display:flex; padding:0 18px; gap:2px; overflow-x:auto; scrollbar-width:none; flex-shrink:0; }
 #nav-tabs::-webkit-scrollbar { display:none; }
-.nav-tab {
-  padding:11px 16px; border:none; background:transparent;
-  color:var(--tm); font-size:13px; font-weight:500;
-  cursor:pointer; white-space:nowrap;
-  border-bottom:2px solid transparent; margin-bottom:-1px;
-  transition:all .2s; display:flex; align-items:center; gap:6px;
-}
+.nav-tab { padding:11px 16px; border:none; background:transparent; color:var(--tm); font-size:13px; font-weight:500; cursor:pointer; white-space:nowrap; border-bottom:2px solid transparent; margin-bottom:-1px; transition:all .2s; font-family:'DM Sans',sans-serif; display:flex; align-items:center; gap:6px; }
 .nav-tab.active { color:var(--gold); border-bottom-color:var(--gold); font-weight:600; }
 .nav-tab:hover:not(.active) { color:var(--text); }
-.tab-badge {
-  background:var(--red); color:#fff; font-size:9px; font-weight:700;
-  min-width:16px; height:16px; border-radius:100px;
-  display:inline-flex; align-items:center; justify-content:center; padding:0 4px;
-}
+.tab-badge { background:var(--red); color:#fff; font-size:9px; font-weight:700; min-width:16px; height:16px; border-radius:100px; display:inline-flex; align-items:center; justify-content:center; padding:0 4px; }
 
-/* ══ PANELS ══════════════════════════════════ */
+/* ── PANELS ── */
 .panel { display:none; flex:1; overflow-y:auto; padding:16px; }
 .panel.active { display:block; }
-.panel-scroll { display:none; flex:1; overflow-y:auto; flex-direction:column; }
-.panel-scroll.active { display:flex; }
 
-/* ══ PAGE HEADER ══════════════════════════════ */
-.page-hd {
-  display:flex; align-items:center; gap:10px;
-  margin-bottom:16px; flex-wrap:wrap;
-}
-.page-title {
-  font-family:'Cormorant Garamond',serif;
-  font-size:24px; font-weight:700; color:var(--text);
-}
+/* ── PAGE HEADER ── */
+.page-hd { display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+.page-title { font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:700; color:var(--text); }
 
-/* ══ ORDER CARDS ══════════════════════════════ */
-.order-card {
-  background:var(--s2); border:1px solid var(--bd);
-  border-radius:var(--r); margin-bottom:10px; overflow:hidden;
-  transition:border-color .2s;
-}
-.order-card.status-ready    { border-left:3px solid var(--amber); }
-.order-card.status-picked_up { border-left:3px solid var(--blue); }
-.order-card.status-delivered { border-left:3px solid var(--green); opacity:.7; }
-.order-card.new-pulse {
-  border-color:var(--gold);
-  animation:newPulse 2s ease-in-out 3;
-}
-@keyframes newPulse {
-  0%,100% { box-shadow:0 0 0 0 transparent; }
-  50%      { box-shadow:0 0 0 5px rgba(200,146,42,.2); }
-}
+/* ── ORDER CARDS ── */
+.order-card { background:var(--s2); border:1px solid var(--bd); border-radius:var(--r); margin-bottom:10px; overflow:hidden; transition:border-color .2s; }
+.order-card.status-confirmed  { border-left:3px solid var(--td); }
+.order-card.status-preparing  { border-left:3px solid var(--blue); }
+.order-card.status-ready      { border-left:3px solid var(--amber); animation:urgentPulse 2.5s ease-in-out infinite; }
+.order-card.status-picked_up  { border-left:3px solid var(--blue); }
+.order-card.status-out_for_delivery { border-left:3px solid var(--gold); }
+.order-card.status-arriving   { border-left:3px solid var(--green); animation:urgentPulse 1.5s ease-in-out infinite; }
+.order-card.status-delivered  { border-left:3px solid var(--green); opacity:.7; }
+@keyframes urgentPulse { 0%,100%{box-shadow:0 0 0 0 transparent;} 50%{box-shadow:0 0 0 5px rgba(200,146,42,.12);} }
 
-.oc-head {
-  padding:12px 16px; display:flex; align-items:center;
-  gap:8px; border-bottom:1px solid var(--bd); flex-wrap:wrap;
-}
-.oc-num {
-  font-family:'DM Mono',monospace; font-size:14px;
-  font-weight:500; color:var(--gold);
-}
+.oc-head { padding:12px 16px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--bd); flex-wrap:wrap; }
+.oc-num { font-family:'DM Mono',monospace; font-size:14px; font-weight:500; color:var(--gold); }
 .oc-time { font-size:11px; color:var(--td); margin-left:auto; font-family:'DM Mono',monospace; }
-.oc-items { padding:12px 16px; border-bottom:1px solid var(--bd); }
-.oc-item-row {
-  display:flex; align-items:flex-start;
-  gap:8px; padding:4px 0; font-size:13px;
-}
-.oc-item-row:not(:last-child) { border-bottom:1px solid rgba(255,255,255,0.04); }
-.oc-qty {
-  min-width:26px; height:26px; background:var(--s3);
-  border-radius:6px; display:flex; align-items:center;
-  justify-content:center; font-size:12px;
-  font-weight:700; color:var(--gold); flex-shrink:0;
-}
-.oc-item-name { flex:1; font-size:13px; font-weight:500; }
+
+/* ── STATUS PROGRESS ── */
+.status-steps { display:flex; align-items:flex-start; padding:12px 16px 8px; gap:0; border-bottom:1px solid var(--bd); overflow-x:auto; scrollbar-width:none; }
+.status-steps::-webkit-scrollbar { display:none; }
+.step { display:flex; flex-direction:column; align-items:center; gap:4px; font-size:9px; text-transform:uppercase; letter-spacing:.6px; color:var(--td); font-weight:600; flex-shrink:0; min-width:52px; }
+.step-dot { width:10px; height:10px; border-radius:50%; background:var(--s4); border:2px solid var(--bd); transition:all .35s; }
+.step.done .step-dot   { background:var(--green); border-color:var(--green); }
+.step.active .step-dot { background:var(--gold); border-color:var(--gold); box-shadow:0 0 0 4px rgba(200,146,42,.2); animation:activePulse 1.8s ease-in-out infinite; }
+@keyframes activePulse { 0%,100%{box-shadow:0 0 0 4px rgba(200,146,42,.2);} 50%{box-shadow:0 0 0 7px rgba(200,146,42,.08);} }
+.step.done  .step-label, .step.active .step-label { color:var(--text); }
+.step-label { text-align:center; line-height:1.3; }
+.step-line { flex:1; height:2px; background:var(--s4); margin:5px -1px 0; min-width:12px; transition:background .4s; align-self:flex-start; }
+.step-line.done { background:var(--green); }
+
+/* ── ADDRESS BLOCK ── */
+.oc-address { padding:10px 16px; background:var(--s1); border-bottom:1px solid var(--bd); }
+.addr-main { font-size:13.5px; font-weight:600; color:var(--text); margin-bottom:3px; }
+.addr-apt  { font-size:12px; color:var(--tm); }
+.addr-note { font-size:11px; color:var(--td); margin-top:4px; font-style:italic; }
+.addr-phone { font-size:12px; color:var(--blue); font-family:'DM Mono',monospace; margin-top:3px; }
+
+/* ── ITEMS ── */
+.oc-items { padding:10px 16px; border-bottom:1px solid var(--bd); }
+.oc-item-row { display:flex; align-items:flex-start; gap:8px; padding:4px 0; }
+.oc-item-row:not(:last-child) { border-bottom:1px solid rgba(255,255,255,0.035); }
+.oc-qty { min-width:26px; height:26px; background:var(--s3); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:var(--gold); flex-shrink:0; }
+.oc-item-name { flex:1; font-size:13px; }
 .oc-item-note { font-size:11px; color:var(--td); }
 
-.oc-address {
-  padding:10px 16px; background:var(--s1);
-  border-bottom:1px solid var(--bd);
-  font-size:12.5px; line-height:1.7; color:var(--tm);
-}
-.oc-address strong { color:var(--text); display:block; font-size:13px; margin-bottom:2px; }
-.oc-address .addr-phone { color:var(--blue); font-family:'DM Mono',monospace; font-size:12px; }
-.oc-address .addr-note { font-size:11px; color:var(--td); margin-top:4px; font-style:italic; }
-
-.oc-foot {
-  padding:10px 16px; display:flex;
-  align-items:center; gap:8px; flex-wrap:wrap;
-}
-.oc-total {
-  font-family:'Cormorant Garamond',serif;
-  font-size:18px; font-weight:700; color:var(--text);
-}
-.oc-elapsed { font-size:11px; color:var(--td); font-family:'DM Mono',monospace; margin-right:auto; }
+/* ── FOOTER ── */
+.oc-foot { padding:10px 16px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.oc-total { font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:700; }
+.oc-elapsed { font-size:11px; color:var(--td); margin-right:auto; font-family:'DM Mono',monospace; }
 .oc-elapsed.warn { color:var(--amber); }
 .oc-elapsed.late { color:var(--red); animation:blink 1s step-end infinite; }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.4} }
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:.35;} }
 
-/* ══ ACTION BUTTONS ══════════════════════════ */
-.action-row {
-  padding:0 16px 14px; display:flex; gap:8px; flex-wrap:wrap;
-}
-.abtn {
-  flex:1; min-width:120px; padding:10px 14px;
-  border-radius:var(--rs); border:1px solid var(--bd);
-  font-size:12px; font-weight:700; cursor:pointer;
-  transition:all .18s; display:flex; align-items:center;
-  justify-content:center; gap:6px; font-family:'DM Sans',sans-serif;
-  letter-spacing:.3px;
-}
+/* ── ACTION ROW ── */
+.action-row { padding:4px 16px 14px; display:flex; gap:8px; flex-wrap:wrap; }
+.abtn { flex:1; min-width:110px; padding:11px 14px; border-radius:var(--rs); border:1px solid var(--bd); font-size:12px; font-weight:700; cursor:pointer; transition:all .18s; display:flex; align-items:center; justify-content:center; gap:5px; font-family:'DM Sans',sans-serif; letter-spacing:.3px; }
 .abtn:active { transform:scale(.97); }
-.abtn-nav {
-  background:var(--blue-d); color:var(--blue);
-  border-color:rgba(74,127,200,.3);
-}
-.abtn-nav:hover { background:rgba(74,127,200,.22); }
-.abtn-pickup {
-  background:var(--amber-d); color:var(--amber);
-  border-color:rgba(200,146,42,.3);
-}
-.abtn-pickup:hover { background:rgba(200,146,42,.22); }
-.abtn-delivered {
-  background:var(--green-d); color:var(--green);
-  border-color:rgba(61,155,106,.3);
-}
-.abtn-delivered:hover { background:rgba(61,155,106,.22); }
-.abtn-call {
-  background:var(--s3); color:var(--tm);
-  border-color:var(--bd); flex:0 0 auto; min-width:unset; padding:10px 14px;
-}
-.abtn-call:hover { background:var(--s4); color:var(--text); }
+.abtn-gold    { background:var(--gold); color:#0A0A0A; border-color:var(--gold); }
+.abtn-gold:hover { background:var(--gold-l); }
+.abtn-blue    { background:var(--blue-d); color:var(--blue); border-color:rgba(74,127,200,.3); }
+.abtn-blue:hover { background:rgba(74,127,200,.22); }
+.abtn-green   { background:var(--green-d); color:var(--green); border-color:rgba(61,155,106,.3); }
+.abtn-green:hover { background:rgba(61,155,106,.22); }
+.abtn-amber   { background:var(--amber-d); color:var(--amber); border-color:rgba(200,146,42,.3); }
+.abtn-amber:hover { background:rgba(200,146,42,.22); }
+.abtn-ghost   { background:var(--s3); color:var(--tm); border-color:var(--bd); flex:0 0 auto; min-width:unset; padding:11px 14px; }
+.abtn-ghost:hover { background:var(--s4); color:var(--text); }
+.abtn:disabled { opacity:.4; cursor:not-allowed; pointer-events:none; }
 
-/* ══ BADGES ══════════════════════════════════ */
-.badge {
-  display:inline-flex; align-items:center;
-  padding:3px 9px; border-radius:100px;
-  font-size:11px; font-weight:600; letter-spacing:.3px;
-}
-.badge-amber  { background:var(--amber-d); color:var(--amber); border:1px solid rgba(200,146,42,.25); }
-.badge-blue   { background:var(--blue-d);  color:var(--blue);  border:1px solid rgba(74,127,200,.25); }
-.badge-green  { background:var(--green-d); color:var(--green); border:1px solid rgba(61,155,106,.25); }
-.badge-grey   { background:var(--s3);      color:var(--tm);    border:1px solid var(--bd); }
-.badge-red    { background:var(--red-d);   color:var(--red);   border:1px solid rgba(192,64,64,.25); }
+/* ── QUEUED BADGE ── */
+.queued-badge { background:var(--blue-d); border:1px solid rgba(74,127,200,.25); color:var(--blue); font-size:11px; font-weight:700; padding:3px 10px; border-radius:100px; display:inline-flex; align-items:center; gap:4px; }
 
-/* ══ FILTER BAR ══════════════════════════════ */
+/* ── BADGES ── */
+.badge { display:inline-flex; align-items:center; padding:3px 9px; border-radius:100px; font-size:11px; font-weight:600; letter-spacing:.3px; }
+.badge-amber { background:var(--amber-d); color:var(--amber); border:1px solid rgba(200,146,42,.25); }
+.badge-blue  { background:var(--blue-d);  color:var(--blue);  border:1px solid rgba(74,127,200,.25); }
+.badge-green { background:var(--green-d); color:var(--green); border:1px solid rgba(61,155,106,.25); }
+.badge-grey  { background:var(--s3);      color:var(--tm);    border:1px solid var(--bd); }
+.badge-red   { background:var(--red-d);   color:var(--red);   border:1px solid rgba(192,64,64,.25); }
+
+/* ── FILTER BAR ── */
 .filter-bar { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
-.fbtn {
-  padding:6px 14px; border-radius:100px; border:1px solid var(--bd);
-  background:var(--s2); color:var(--tm); font-size:12px; font-weight:500;
-  cursor:pointer; transition:all .15s; font-family:'DM Sans',sans-serif;
-}
-.fbtn.active {
-  background:var(--gold); color:#0A0A0A;
-  border-color:var(--gold); font-weight:700;
-}
+.fbtn { padding:6px 14px; border-radius:100px; border:1px solid var(--bd); background:var(--s2); color:var(--tm); font-size:12px; font-weight:500; cursor:pointer; transition:all .15s; font-family:'DM Sans',sans-serif; }
+.fbtn.active { background:var(--gold); color:#0A0A0A; border-color:var(--gold); font-weight:700; }
 
-/* ══ EARNINGS PANEL ══════════════════════════ */
-.earn-stats {
-  display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px;
-}
-.earn-card {
-  background:var(--s2); border:1px solid var(--bd);
-  border-radius:var(--r); padding:16px 18px;
-}
+/* ── EARNINGS ── */
+.earn-stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+.earn-card { background:var(--s2); border:1px solid var(--bd); border-radius:var(--r); padding:16px 18px; }
 .earn-label { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--td); margin-bottom:6px; }
-.earn-val {
-  font-family:'Cormorant Garamond',serif;
-  font-size:28px; font-weight:700; color:var(--text);
-}
+.earn-val { font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:700; color:var(--text); }
 .earn-sub { font-size:11px; color:var(--tm); margin-top:2px; }
 .earn-card.highlight { border-color:rgba(200,146,42,.3); background:var(--gold-d); }
 .earn-card.highlight .earn-val { color:var(--gold); }
-.earn-history-item {
-  background:var(--s2); border:1px solid var(--bd);
-  border-radius:var(--rs); padding:12px 14px; margin-bottom:8px;
-  display:flex; align-items:center; gap:12px;
-}
-.earn-history-icon {
-  width:36px; height:36px; border-radius:50%;
-  background:var(--green-d); display:flex; align-items:center;
-  justify-content:center; font-size:16px; flex-shrink:0;
-  border:1px solid rgba(61,155,106,.2);
-}
-.earn-history-info { flex:1; }
-.earn-history-title { font-size:13px; font-weight:600; }
-.earn-history-sub { font-size:11px; color:var(--tm); }
-.earn-history-amt { font-family:'DM Mono',monospace; font-size:14px; font-weight:700; color:var(--green); }
+.earn-hist-item { background:var(--s2); border:1px solid var(--bd); border-radius:var(--rs); padding:12px 14px; margin-bottom:8px; display:flex; align-items:center; gap:12px; }
+.earn-hist-ico { width:36px; height:36px; border-radius:50%; background:var(--green-d); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+.earn-hist-info { flex:1; }
+.earn-hist-title { font-size:13px; font-weight:600; }
+.earn-hist-sub { font-size:11px; color:var(--tm); }
+.earn-hist-amt { font-family:'DM Mono',monospace; font-size:14px; font-weight:700; color:var(--green); }
 
-/* ══ EMPTY STATE ══════════════════════════════ */
+/* ── PROFILE ── */
+.profile-card { background:var(--s2); border:1px solid var(--bd); border-radius:var(--r); padding:18px; margin-bottom:14px; display:flex; align-items:center; gap:14px; }
+.profile-av { width:52px; height:52px; border-radius:50%; background:var(--gold-d); border:2px solid rgba(200,146,42,.3); display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:700; color:var(--gold); font-family:'Cormorant Garamond',serif; flex-shrink:0; }
+.profile-name { font-size:16px; font-weight:700; margin-bottom:2px; }
+.profile-role { font-size:11px; color:var(--td); letter-spacing:1.5px; text-transform:uppercase; }
+
+/* ── EMPTY / SPINNER ── */
 .empty-state { text-align:center; padding:60px 20px; color:var(--td); }
 .empty-state .emoji { font-size:52px; margin-bottom:14px; }
 .empty-state h3 { font-size:16px; font-weight:600; color:var(--tm); margin-bottom:6px; }
 .empty-state p  { font-size:13px; }
-
-/* ══ SPINNER ══════════════════════════════════ */
-.spinner {
-  width:30px; height:30px; border:2px solid var(--s4);
-  border-top-color:var(--gold); border-radius:50%;
-  animation:spin .75s linear infinite; margin:40px auto;
-}
+.spinner { width:30px; height:30px; border:2px solid var(--s4); border-top-color:var(--gold); border-radius:50%; animation:spin .75s linear infinite; margin:40px auto; }
 @keyframes spin { to { transform:rotate(360deg); } }
 
-/* ══ TOAST ════════════════════════════════════ */
-#toast {
-  position:fixed; bottom:24px; left:50%;
-  transform:translateX(-50%) translateY(80px);
-  background:var(--s1); border:1px solid var(--bd);
-  border-radius:100px; padding:10px 20px;
-  font-size:13px; font-weight:500;
-  transition:transform .3s cubic-bezier(.34,1.56,.64,1), opacity .3s;
-  opacity:0; z-index:9999; white-space:nowrap;
-  pointer-events:none; max-width:90vw; text-align:center;
-}
+/* ── TOAST ── */
+#toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); background:var(--s1); border:1px solid var(--bd); border-radius:100px; padding:10px 20px; font-size:13px; font-weight:500; transition:transform .3s cubic-bezier(.34,1.56,.64,1), opacity .3s; opacity:0; z-index:9999; white-space:nowrap; pointer-events:none; max-width:90vw; text-align:center; }
 #toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
 #toast.t-success { border-color:rgba(61,155,106,.4); color:var(--green); }
 #toast.t-error   { border-color:rgba(192,64,64,.4);  color:var(--red); }
 #toast.t-info    { border-color:rgba(74,127,200,.4);  color:var(--blue); }
 
-/* ══ NEW ORDER ALERT OVERLAY ══════════════════ */
-#order-alert-overlay {
-  position:fixed; inset:0; z-index:2000;
-  background:rgba(0,0,0,0.93);
-  display:none; flex-direction:column;
-  align-items:center; justify-content:center;
-  text-align:center; padding:32px;
-}
-#order-alert-overlay.ringing { display:flex; }
-.oa-pulse {
-  width:120px; height:120px; border-radius:50%;
-  background:rgba(200,146,42,0.12); position:absolute;
-  animation:oaPulse 1.4s ease-out infinite;
-}
-@keyframes oaPulse {
-  0%   { transform:scale(0.8); opacity:1; }
-  100% { transform:scale(2.4); opacity:0; }
-}
-.oa-icon {
-  font-size:72px; margin-bottom:16px; position:relative; z-index:1;
-  animation:iconBounce .6s ease-in-out infinite alternate;
-}
-@keyframes iconBounce {
-  from { transform:scale(1) rotate(-5deg); }
-  to   { transform:scale(1.1) rotate(5deg); }
-}
-.oa-title {
-  font-family:'Cormorant Garamond',serif;
-  font-size:32px; font-weight:700; color:var(--gold);
-  margin-bottom:6px; position:relative; z-index:1;
-}
-.oa-sub { font-size:14px; color:var(--tm); margin-bottom:8px; position:relative; z-index:1; }
-.oa-order-num {
-  font-family:'DM Mono',monospace; font-size:36px;
-  font-weight:700; color:var(--text); margin-bottom:6px;
-  position:relative; z-index:1; letter-spacing:2px;
-}
-.oa-addr { font-size:13px; color:var(--tm); margin-bottom:24px; position:relative; z-index:1; line-height:1.6; }
-.oa-actions { display:flex; gap:10px; position:relative; z-index:1; }
-.btn-accept {
-  background:var(--gold); color:#0A0A0A; border:none;
-  border-radius:var(--r); padding:16px 32px; font-size:15px;
-  font-weight:700; cursor:pointer; transition:all .2s; letter-spacing:.5px;
-}
-.btn-accept:hover { background:var(--gold-l); transform:scale(1.03); }
-.btn-dismiss {
-  background:var(--s3); color:var(--tm); border:1px solid var(--bd);
-  border-radius:var(--r); padding:16px 24px; font-size:14px;
-  font-weight:600; cursor:pointer; transition:all .2s;
-}
-.btn-dismiss:hover { background:var(--s4); color:var(--text); }
+/* ── NEW ORDER ALERT ── */
+#order-alert { position:fixed; inset:0; z-index:2000; background:rgba(0,0,0,0.94); display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:32px; }
+#order-alert.show { display:flex; }
+.oa-pulse { width:130px; height:130px; border-radius:50%; background:rgba(200,146,42,.1); position:absolute; animation:oaPulse 1.5s ease-out infinite; }
+.oa-icon { font-size:68px; margin-bottom:14px; position:relative; z-index:1; animation:iconRock .7s ease-in-out infinite alternate; }
+@keyframes oaPulse { 0%{transform:scale(.8);opacity:1;} 100%{transform:scale(2.5);opacity:0;} }
+@keyframes iconRock { from{transform:scale(1) rotate(-6deg);} to{transform:scale(1.08) rotate(6deg);} }
+.oa-title { font-family:'Cormorant Garamond',serif; font-size:30px; font-weight:700; color:var(--gold); margin-bottom:6px; position:relative; z-index:1; }
+.oa-sub { font-size:13px; color:var(--tm); margin-bottom:10px; position:relative; z-index:1; }
+.oa-num { font-family:'DM Mono',monospace; font-size:38px; font-weight:700; color:var(--text); margin-bottom:6px; position:relative; z-index:1; letter-spacing:3px; }
+.oa-addr { font-size:13px; color:var(--tm); margin-bottom:24px; position:relative; z-index:1; line-height:1.7; max-width:340px; }
+.btn-oa-ok { background:var(--gold); color:#0A0A0A; border:none; border-radius:var(--r); padding:16px 36px; font-size:15px; font-weight:700; cursor:pointer; transition:all .2s; letter-spacing:.5px; position:relative; z-index:1; }
+.btn-oa-ok:hover { background:var(--gold-l); transform:scale(1.03); }
 
-/* ══ STATUS PROGRESS BAR ══════════════════════ */
-.status-steps {
-  display:flex; gap:0; padding:10px 16px;
-  border-bottom:1px solid var(--bd); align-items:center;
-}
-.step {
-  display:flex; flex-direction:column; align-items:center;
-  flex:1; gap:4px; font-size:9px; text-transform:uppercase;
-  letter-spacing:.8px; color:var(--td); font-weight:600;
-}
-.step-dot {
-  width:10px; height:10px; border-radius:50%;
-  background:var(--s4); border:2px solid var(--bd);
-  transition:all .3s; position:relative;
-}
-.step.done .step-dot { background:var(--green); border-color:var(--green); }
-.step.active .step-dot {
-  background:var(--gold); border-color:var(--gold);
-  box-shadow:0 0 0 4px rgba(200,146,42,.2);
-  animation:activePulse 1.5s ease-in-out infinite;
-}
-@keyframes activePulse { 0%,100%{box-shadow:0 0 0 4px rgba(200,146,42,.2);} 50%{box-shadow:0 0 0 7px rgba(200,146,42,.1);} }
-.step.done .step-label,
-.step.active .step-label { color:var(--text); }
-.step-line {
-  flex:1; height:2px; background:var(--s4);
-  margin:0 -1px; align-self:flex-start; margin-top:10px;
-  transition: background .4s;
-}
-.step-line.done { background:var(--green); }
+/* ── BREAK APPROVED OVERLAY ── */
+#break-overlay { position:fixed; inset:0; z-index:1500; background:rgba(0,0,0,0.88); display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:32px; }
+#break-overlay.show { display:flex; }
 
-/* ══ PROFILE SECTION ══════════════════════════ */
-.profile-card {
-  background:var(--s2); border:1px solid var(--bd);
-  border-radius:var(--r); padding:20px; margin-bottom:14px;
-  display:flex; align-items:center; gap:16px;
-}
-.profile-avatar {
-  width:56px; height:56px; border-radius:50%;
-  background:var(--gold-d); border:2px solid rgba(200,146,42,.3);
-  display:flex; align-items:center; justify-content:center;
-  font-size:24px; font-weight:700; color:var(--gold);
-  font-family:'Cormorant Garamond',serif; flex-shrink:0;
-}
-.profile-name { font-size:17px; font-weight:700; margin-bottom:2px; }
-.profile-role { font-size:11px; color:var(--td); letter-spacing:1.5px; text-transform:uppercase; }
-
-/* ══ MODAL ════════════════════════════════════ */
-#modal-overlay {
-  position:fixed; inset:0; background:rgba(0,0,0,0.75);
-  display:none; align-items:flex-end; justify-content:center;
-  z-index:500; padding:0;
-}
-#modal-overlay.open { display:flex; }
-.modal-box {
-  background:var(--s1); border:1px solid var(--bd);
-  border-radius:20px 20px 0 0; padding:24px 20px;
-  width:100%; max-width:520px; max-height:80vh; overflow-y:auto;
-}
-.modal-title {
-  font-family:'Cormorant Garamond',serif;
-  font-size:22px; font-weight:700; margin-bottom:16px;
-  display:flex; align-items:center; justify-content:space-between;
-}
-.modal-close {
-  width:30px; height:30px; border-radius:50%; background:var(--s3);
-  border:none; color:var(--tm); font-size:18px;
-  cursor:pointer; display:flex; align-items:center; justify-content:center;
-}
-
-/* ══ RESPONSIVE ══════════════════════════════ */
 @media(max-width:480px) {
   #topbar { padding:0 12px; }
   .panel  { padding:12px; }
@@ -500,7 +248,7 @@ input:checked + .toggle-slider:before { transform:translateX(19px); background:#
 </head>
 <body>
 
-<!-- ══ LOGIN OVERLAY ════════════════════════════════════ -->
+<!-- ══ LOGIN ══════════════════════════════════════════════ -->
 <div id="login-overlay">
   <div class="login-wrap">
     <div class="login-logo" id="login-logo">GRISTO</div>
@@ -522,7 +270,7 @@ input:checked + .toggle-slider:before { transform:translateX(19px); background:#
   </div>
 </div>
 
-<!-- ══ RIDER APP ═════════════════════════════════════════ -->
+<!-- ══ RIDER APP ═══════════════════════════════════════════ -->
 <div id="rider-app">
 
   <!-- TOPBAR -->
@@ -530,21 +278,23 @@ input:checked + .toggle-slider:before { transform:translateX(19px); background:#
     <div class="tb-brand" id="tb-brand">GRISTO</div>
     <div class="tb-role">Rider</div>
     <div class="tb-spacer"></div>
-    <div class="tb-status-dot" id="online-dot" title="Online"></div>
     <div class="tb-time" id="tb-time"></div>
     <button class="tb-logout" onclick="riderLogout()">Sign Out</button>
   </div>
 
-  <!-- ONLINE TOGGLE BAR -->
-  <div id="online-bar">
-    <div>
-      <div class="online-label" id="online-label">You're Online</div>
-      <div class="online-sub" id="online-sub">Ready to receive deliveries</div>
+  <!-- BREAK PENDING BANNER -->
+  <div id="break-banner">⏳ Break request sent — waiting for manager approval…</div>
+
+  <!-- STATUS BAR -->
+  <div id="status-bar">
+    <div class="status-indicator">
+      <div class="status-dot available" id="status-dot"></div>
+      <div>
+        <div class="status-text" id="status-text">Available</div>
+        <div class="status-sub"  id="status-sub">Ready for deliveries</div>
+      </div>
     </div>
-    <label class="toggle">
-      <input type="checkbox" id="online-toggle" checked onchange="toggleOnlineStatus()">
-      <span class="toggle-slider"></span>
-    </label>
+    <button class="btn-break" id="btn-break" onclick="requestBreak()">☕ Request Break</button>
   </div>
 
   <!-- NAV TABS -->
@@ -553,7 +303,7 @@ input:checked + .toggle-slider:before { transform:translateX(19px); background:#
       🏍 Active <span class="tab-badge" id="active-badge" style="display:none">0</span>
     </button>
     <button class="nav-tab" id="tab-queue-btn" onclick="switchTab('queue')">
-      📦 Queue <span class="tab-badge" id="queue-badge" style="display:none">0</span>
+      📦 Assigned <span class="tab-badge" id="queue-badge" style="display:none">0</span>
     </button>
     <button class="nav-tab" id="tab-history-btn" onclick="switchTab('history')">
       📋 History
@@ -563,27 +313,21 @@ input:checked + .toggle-slider:before { transform:translateX(19px); background:#
     </button>
   </div>
 
-  <!-- ── ACTIVE DELIVERIES PANEL ─────────────────── -->
+  <!-- ── ACTIVE PANEL ─── -->
   <div class="panel active" id="panel-active">
-    <div class="page-hd">
-      <div class="page-title">Active Deliveries</div>
-    </div>
+    <div class="page-hd"><div class="page-title">Active Delivery</div></div>
     <div id="active-list"><div class="spinner"></div></div>
   </div>
 
-  <!-- ── QUEUE PANEL ──────────────────────────────── -->
+  <!-- ── ASSIGNED/QUEUE PANEL ─── -->
   <div class="panel" id="panel-queue">
-    <div class="page-hd">
-      <div class="page-title">Delivery Queue</div>
-    </div>
+    <div class="page-hd"><div class="page-title">Assigned to Me</div></div>
     <div id="queue-list"><div class="spinner"></div></div>
   </div>
 
-  <!-- ── HISTORY PANEL ────────────────────────────── -->
+  <!-- ── HISTORY PANEL ─── -->
   <div class="panel" id="panel-history">
-    <div class="page-hd">
-      <div class="page-title">Today's Deliveries</div>
-    </div>
+    <div class="page-hd"><div class="page-title">Delivery History</div></div>
     <div class="filter-bar">
       <button class="fbtn active" id="hf-today" onclick="setHistoryFilter('today')">Today</button>
       <button class="fbtn" id="hf-week" onclick="setHistoryFilter('week')">This Week</button>
@@ -591,40 +335,32 @@ input:checked + .toggle-slider:before { transform:translateX(19px); background:#
     <div id="history-list"><div class="spinner"></div></div>
   </div>
 
-  <!-- ── EARNINGS PANEL ────────────────────────────── -->
+  <!-- ── EARNINGS PANEL ─── -->
   <div class="panel" id="panel-earnings">
-    <div class="page-hd">
-      <div class="page-title">Earnings</div>
-    </div>
+    <div class="page-hd"><div class="page-title">Earnings</div></div>
     <div id="earnings-content"><div class="spinner"></div></div>
   </div>
 
-</div><!-- /rider-app -->
+</div>
 
-<!-- ══ NEW ORDER ALERT OVERLAY ══════════════════════════ -->
-<div id="order-alert-overlay">
+<!-- ══ NEW ORDER ASSIGNED ALERT ════════════════════════════ -->
+<div id="order-alert">
   <div class="oa-pulse"></div>
   <div class="oa-pulse" style="animation-delay:.5s;"></div>
   <div class="oa-icon">🛵</div>
-  <div class="oa-title">New Delivery!</div>
-  <div class="oa-sub" id="oa-sub">Order ready for pickup</div>
-  <div class="oa-order-num" id="oa-order-num">#—</div>
-  <div class="oa-addr" id="oa-addr">Loading address…</div>
-  <div class="oa-actions">
-    <button class="btn-accept" onclick="acceptDelivery()">🏍 Accept</button>
-    <button class="btn-dismiss" onclick="dismissAlert()">Skip</button>
-  </div>
+  <div class="oa-title" id="oa-title">Delivery Assigned!</div>
+  <div class="oa-sub" id="oa-sub">A new delivery has been assigned to you</div>
+  <div class="oa-num" id="oa-num">#—</div>
+  <div class="oa-addr" id="oa-addr"></div>
+  <button class="btn-oa-ok" onclick="acknowledgeOrderAlert()">Got it — View Order</button>
 </div>
 
-<!-- MODAL (for order details full view) -->
-<div id="modal-overlay" onclick="closeModal(event)">
-  <div class="modal-box" id="modal-box">
-    <div class="modal-title">
-      <span id="modal-title-text">Order Detail</span>
-      <button class="modal-close" onclick="closeModal()">×</button>
-    </div>
-    <div id="modal-body"></div>
-  </div>
+<!-- ══ BREAK APPROVED OVERLAY ══════════════════════════════ -->
+<div id="break-overlay">
+  <div style="font-size:52px;margin-bottom:16px;">☕</div>
+  <div style="font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--gold);margin-bottom:8px;">Break Approved!</div>
+  <div style="color:var(--tm);font-size:14px;margin-bottom:28px;">Your manager has approved your break.<br>Enjoy your rest.</div>
+  <button class="abtn abtn-green" style="min-width:180px;" onclick="endBreak()">✅ I'm Back — End Break</button>
 </div>
 
 <!-- TOAST -->
@@ -634,13 +370,12 @@ input:checked + .toggle-slider:before { transform:translateX(19px); background:#
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<!-- Cloudflare Turnstile -->
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <script>
-// ════════════════════════════════════════════════════════
-//  FIREBASE CONFIG  — same project as all other apps
-// ════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════
+//  FIREBASE CONFIG — same project across all 5 apps
+// ══════════════════════════════════════════════════════════
 const firebaseConfig = {
   apiKey:            "AIzaSyCK66lI9FbcD0L7MLv0xSDI-ATuer2uE2o",
   authDomain:        "gristo-selfcheckout.firebaseapp.com",
@@ -654,56 +389,64 @@ let db = null;
 try {
   firebase.initializeApp(firebaseConfig);
   db = firebase.firestore();
-  // Enable offline persistence for PWA
   db.enablePersistence({ synchronizeTabs: true }).catch(() => {});
-} catch(e) { console.warn('Firebase:', e.message); }
+} catch(e) { console.warn('Firebase init:', e.message); }
 
-// ── STATE ────────────────────────────────────────────────
-let _turnstileToken  = null;
-let currentUser      = null;
-let currentEmployee  = null;
-let settings         = {};
-let allOrders        = [];          // all delivery orders visible to rider
-let historyFilter    = 'today';
-let isOnline         = true;        // rider's availability toggle
+// ══ STATE ══════════════════════════════════════════════════
+let _turnstileToken    = null;
+let currentUser        = null;
+let currentEmployee    = null;
+let settings           = {};
+let allMyOrders        = [];   // orders assigned to THIS rider
+let historyFilter      = 'today';
+let myRiderStatus      = 'available'; // available | on_delivery | on_break
+let myBreakRequestId   = null;
+let myBreakStatus      = null;        // null | 'pending' | 'approved' | 'denied'
 
-// Firestore listeners
-let ordersListener   = null;
-let settingsListener = null;
-let freezeListener   = null;
+// alert state
+let alertOrderId       = null;
+let alertSoundInterval = null;
 
-// Alert state
-let alertOrderId     = null;
-let alertSound       = null;
+// Firestore unsubscribers
+let ordersUnsub   = null;
+let settingsUnsub = null;
+let presenceUnsub = null;
+let breakUnsub    = null;
+let freezeUnsub   = null;
 
-// ── STATUS CONSTANTS ──────────────────────────────────────
+// Status labels/colors (matching entire system)
 const STATUS_LABELS = {
   received:'New', pending:'New', confirmed:'Confirmed',
   preparing:'Preparing', ready:'Ready for Pickup',
-  picked_up:'In Transit', delivered:'Delivered', completed:'Done'
+  picked_up:'Picked Up', out_for_delivery:'Out for Delivery',
+  arriving:'Arriving', delivered:'Delivered', completed:'Done'
 };
 const STATUS_COLORS = {
-  received:'amber', pending:'amber', confirmed:'blue',
+  received:'amber', pending:'amber', confirmed:'grey',
   preparing:'blue', ready:'amber',
-  picked_up:'blue', delivered:'green', completed:'grey'
+  picked_up:'blue', out_for_delivery:'amber',
+  arriving:'green', delivered:'green', completed:'grey'
 };
-// Delivery status flow steps shown on progress bar
-const DELIVERY_STEPS = [
-  { key:'confirmed',  label:'Confirmed'  },
-  { key:'preparing',  label:'Preparing'  },
-  { key:'ready',      label:'Ready'      },
-  { key:'picked_up',  label:'Picked Up'  },
-  { key:'delivered',  label:'Delivered'  },
-];
 
-// ── TURNSTILE ────────────────────────────────────────────
+// Delivery-specific status steps shown on progress bar
+const DELIVERY_STEPS = [
+  { key:'preparing',       label:'Preparing'    },
+  { key:'ready',           label:'Ready'        },
+  { key:'picked_up',       label:'Picked Up'    },
+  { key:'out_for_delivery',label:'On the Way'   },
+  { key:'arriving',        label:'Arriving'     },
+  { key:'delivered',       label:'Delivered'    },
+];
+const STATUS_ORDER_DEL = ['confirmed','preparing','ready','picked_up','out_for_delivery','arriving','delivered'];
+
+// ══ TURNSTILE ══════════════════════════════════════════════
 function onTurnstileSuccess(token) {
   _turnstileToken = token;
   const btn = document.getElementById('login-btn');
   btn.disabled = false; btn.style.opacity = '1';
 }
 
-// ── EMAIL HASH ────────────────────────────────────────────
+// ══ HASH EMAIL ═════════════════════════════════════════════
 async function hashEmail(email) {
   const normalized = email.trim().toLowerCase();
   const buf  = new TextEncoder().encode(normalized);
@@ -711,7 +454,7 @@ async function hashEmail(email) {
   return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('');
 }
 
-// ── LOGIN ─────────────────────────────────────────────────
+// ══ LOGIN ══════════════════════════════════════════════════
 async function tryRiderLogin() {
   if (!_turnstileToken) { showLoginErr('Please complete the human check.'); return; }
   const email = document.getElementById('login-email').value.trim().toLowerCase();
@@ -723,30 +466,25 @@ async function tryRiderLogin() {
   btn.disabled = true; btn.textContent = 'Checking…';
 
   try {
-    // Step 1: role check BEFORE firebase auth
     const hash     = await hashEmail(email);
     const roleSnap = await db.collection('employee_roles').doc(hash).get();
 
     if (!roleSnap.exists) {
-      showLoginErr('No account found for this email.'); resetLoginBtn(); return;
+      showLoginErr('No account found.'); resetLoginBtn(); return;
     }
-
-    const roleData = roleSnap.data();
-    if (!['rider','superadmin','admin'].includes(roleData.role)) {
+    const rd = roleSnap.data();
+    if (!['rider','superadmin','admin'].includes(rd.role)) {
       showLoginErr('Access denied. This portal is for riders only.'); resetLoginBtn(); return;
     }
-    if (roleData.active === false || roleData.frozen === true) {
+    if (rd.active === false || rd.frozen === true) {
       showLoginErr('Your access has been suspended. Contact your manager.'); resetLoginBtn(); return;
     }
 
-    // Step 2: authenticate
     btn.textContent = 'Signing in…';
     await firebase.auth().signInWithEmailAndPassword(email, pw);
-
   } catch(e) {
-    const msg = (e.code === 'auth/wrong-password' || e.code === 'auth/user-not-found')
-      ? 'Incorrect email or password' : e.message;
-    showLoginErr(msg);
+    showLoginErr((e.code === 'auth/wrong-password' || e.code === 'auth/user-not-found')
+      ? 'Incorrect email or password' : e.message);
     resetLoginBtn();
     _turnstileToken = null;
     if (window.turnstile) turnstile.reset();
@@ -763,12 +501,10 @@ function resetLoginBtn() {
   btn.disabled = false; btn.textContent = 'Sign In →';
 }
 
-// ── AUTH STATE ────────────────────────────────────────────
+// ══ AUTH STATE ══════════════════════════════════════════════
 firebase.auth().onAuthStateChanged(async user => {
   if (user) {
     currentUser = user;
-
-    // Re-verify role on every auth state
     const hash     = await hashEmail(user.email);
     const roleSnap = await db.collection('employee_roles').doc(hash).get();
 
@@ -777,27 +513,19 @@ firebase.auth().onAuthStateChanged(async user => {
       || roleSnap.data().active === false
       || roleSnap.data().frozen === true) {
       await firebase.auth().signOut();
-      showLoginErr('Your access has been revoked. Contact your manager.');
+      showLoginErr('Your access has been revoked.');
       return;
     }
 
     const empSnap = await db.collection('employees').doc(user.uid).get();
     currentEmployee = empSnap.exists ? empSnap.data() : { name: user.email, role:'rider' };
 
-    // Write presence
-    writePresence(true);
-    window.addEventListener('beforeunload', () => writePresence(false));
-    document.addEventListener('visibilitychange', () => {
-      writePresence(!document.hidden);
-    });
-
-    // Reveal app
     document.getElementById('login-overlay').style.display = 'none';
     document.getElementById('rider-app').style.display     = 'flex';
     initRiderApp();
 
-    // Real-time freeze check
-    freezeListener = db.collection('employee_roles').doc(hash).onSnapshot(snap => {
+    // Freeze check
+    freezeUnsub = db.collection('employee_roles').doc(hash).onSnapshot(snap => {
       if (!snap.exists) { firebase.auth().signOut(); return; }
       const d = snap.data();
       if (d.active === false || d.frozen === true) {
@@ -808,53 +536,46 @@ firebase.auth().onAuthStateChanged(async user => {
 
   } else {
     currentUser = null; currentEmployee = null;
-    teardownListeners();
+    teardown();
     document.getElementById('rider-app').style.display    = 'none';
     document.getElementById('login-overlay').style.display = 'flex';
   }
 });
 
-function writePresence(online) {
-  if (!db || !currentUser) return;
-  db.collection('presence').doc(currentUser.uid).set({
-    online, portal: 'rider',
-    lastSeen: firebase.firestore.FieldValue.serverTimestamp()
-  });
-}
-
-function riderLogout() {
-  writePresence(false);
+function teardown() {
+  [ordersUnsub, settingsUnsub, presenceUnsub, breakUnsub, freezeUnsub].forEach(u => u?.());
+  ordersUnsub = settingsUnsub = presenceUnsub = breakUnsub = freezeUnsub = null;
   dismissAlert();
-  firebase.auth().signOut();
-}
-
-function teardownListeners() {
-  if (ordersListener)   { ordersListener();   ordersListener = null; }
-  if (settingsListener) { settingsListener(); settingsListener = null; }
-  if (freezeListener)   { freezeListener();   freezeListener = null; }
 }
 
 function showFreezeAlert() {
   dismissAlert();
-  const overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:3000;display:flex;align-items:center;justify-content:center;text-align:center;padding:32px;';
-  overlay.innerHTML = `<div><div style="font-size:52px;margin-bottom:16px;">🔒</div><div style="font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--gold);margin-bottom:8px;">Access Suspended</div><div style="color:var(--tm);font-size:14px;">Contact your manager.</div></div>`;
-  document.body.appendChild(overlay);
+  const o = document.createElement('div');
+  o.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.93);z-index:4000;display:flex;align-items:center;justify-content:center;text-align:center;padding:32px;';
+  o.innerHTML = '<div><div style="font-size:52px;margin-bottom:16px;">🔒</div><div style="font-family:\'Cormorant Garamond\',serif;font-size:28px;color:var(--gold);margin-bottom:8px;">Access Suspended</div><div style="color:var(--tm);font-size:14px;">Contact your manager.</div></div>';
+  document.body.appendChild(o);
 }
 
-// ── INIT ──────────────────────────────────────────────────
+function riderLogout() {
+  dismissAlert();
+  writePresenceFull('offline', null, false);
+  firebase.auth().signOut();
+}
+
+// ══ INIT ════════════════════════════════════════════════════
 function initRiderApp() {
   tickTime();
   setInterval(tickTime, 30000);
-  setInterval(rerenderElapsed, 60000);
+  setInterval(() => rerenderIfVisible(['panel-active','panel-queue']), 60000);
   startSettingsListener();
   startOrdersListener();
-  renderEarnings();
-  // Init profile info
-  const emp = currentEmployee;
-  if (emp?.name) {
-    document.title = emp.name + ' — Rider Portal';
-  }
+  startBreakListener();
+  writePresenceFull('available', null, true);
+  window.addEventListener('beforeunload', () => writePresenceFull('offline', null, false));
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) writePresenceFull(myRiderStatus, null, false);
+    else writePresenceFull(myRiderStatus, null, true);
+  });
 }
 
 function tickTime() {
@@ -862,33 +583,34 @@ function tickTime() {
   if (el) el.textContent = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
 }
 
-function rerenderElapsed() {
-  // Refresh elapsed times on visible panel without full re-render
-  const activePanel = document.querySelector('.panel.active');
-  if (activePanel?.id === 'panel-active') renderActiveList();
-  if (activePanel?.id === 'panel-queue')  renderQueueList();
+function rerenderIfVisible(panels) {
+  const active = document.querySelector('.panel.active');
+  if (active && panels.includes(active.id)) renderCurrentPanel();
 }
 
-// ── SETTINGS LISTENER ─────────────────────────────────────
+// ══ PRESENCE ════════════════════════════════════════════════
+// riderStatus: 'available' | 'on_delivery' | 'on_break' | 'offline'
+function writePresenceFull(riderStatus, currentOrderId, online) {
+  if (!db || !currentUser) return;
+  const data = {
+    online, portal: 'rider', riderStatus,
+    lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  if (currentOrderId !== null) data.currentOrderId = currentOrderId;
+  db.collection('presence').doc(currentUser.uid).set(data, { merge: true });
+}
+
+// ══ SETTINGS LISTENER ══════════════════════════════════════
 function startSettingsListener() {
   if (!db) return;
-  settingsListener = db.collection('settings').doc('global').onSnapshot(snap => {
+  settingsUnsub = db.collection('settings').doc('global').onSnapshot(snap => {
     if (!snap.exists) return;
     settings = { ...settings, ...snap.data() };
-
-    // Sync restaurant name
     const name = settings.restaurantName || 'Gristo';
     document.getElementById('tb-brand').textContent   = name;
     document.getElementById('login-logo').textContent = name;
     document.title = name + ' — Rider Portal';
-
-    // Sync brand colors
-    if (settings.brandColors) {
-      const applyTo = settings.applyBrandTo || 'both';
-      if (['rider','both','all'].includes(applyTo)) {
-        applyBrandColors(settings.brandColors);
-      }
-    }
+    if (settings.brandColors) applyBrandColors(settings.brandColors);
   });
 }
 
@@ -905,78 +627,311 @@ function applyBrandColors(bc) {
     root.style.setProperty('--amber-d', `rgba(${r},${g},${b},0.14)`);
   }
   if (bc.bg)      root.style.setProperty('--bg',   bc.bg);
-  if (bc.surface) {
-    root.style.setProperty('--s1', bc.surface);
-    root.style.setProperty('--s2', bc.surface);
-  }
+  if (bc.surface) { root.style.setProperty('--s1', bc.surface); root.style.setProperty('--s2', bc.surface); }
   if (bc.text)    root.style.setProperty('--text', bc.text);
 }
 
-function lightenHex(hex, amount) {
-  const r = Math.min(255, parseInt(hex.slice(1,3),16)+amount);
-  const g = Math.min(255, parseInt(hex.slice(3,5),16)+amount);
-  const b = Math.min(255, parseInt(hex.slice(5,7),16)+amount);
+function lightenHex(hex, a) {
+  const r = Math.min(255, parseInt(hex.slice(1,3),16)+a);
+  const g = Math.min(255, parseInt(hex.slice(3,5),16)+a);
+  const b = Math.min(255, parseInt(hex.slice(5,7),16)+a);
   return `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`;
 }
 
-// ── ORDERS LISTENER ───────────────────────────────────────
-let _prevOrderIds = new Set();
+// ══ ORDERS LISTENER ════════════════════════════════════════
+let _prevMyOrderIds = new Set();
 
 function startOrdersListener() {
   if (!db) return;
+  const myUid = currentUser.uid;
 
-  // Listen to ALL delivery orders that haven't been completed/cancelled
-  // Rider sees: ready (not yet picked up), picked_up (in transit), delivered (for history)
-  ordersListener = db.collection('orders')
+  ordersUnsub = db.collection('orders')
     .where('orderType', '==', 'delivery')
+    .where('riderId', '==', myUid)
     .orderBy('timestamp', 'desc')
     .onSnapshot(snap => {
       const incoming = snap.docs.map(d => ({ ...d.data(), _id: d.id }));
 
-      // Detect brand-new 'ready' orders to trigger alert
-      const newReadyOrders = incoming.filter(o =>
-        o.status === 'ready' &&
-        !o.riderId &&                      // not yet assigned to a rider
-        !_prevOrderIds.has(o._id)          // we hadn't seen this before
+      // Detect brand-new assignments
+      const newAssigned = incoming.filter(o =>
+        !_prevMyOrderIds.has(o._id) &&
+        _prevMyOrderIds.size > 0 &&
+        !['delivered','completed','cancelled'].includes(o.status)
       );
 
-      // Update state
-      allOrders = incoming;
-      _prevOrderIds = new Set(incoming.map(o => o._id));
+      allMyOrders = incoming;
+      _prevMyOrderIds = new Set(incoming.map(o => o._id));
 
-      // Re-render current panel
       renderCurrentPanel();
       updateBadges();
+      renderStatusBar();
       renderEarnings();
 
-      // Show alert for first new unassigned ready order (if online)
-      if (isOnline && newReadyOrders.length > 0 && !alertOrderId) {
-        showNewOrderAlert(newReadyOrders[0]);
+      // Alert for new assignment
+      if (newAssigned.length > 0) {
+        showOrderAlert(newAssigned[0]);
       }
-
     }, e => console.warn('orders listener:', e));
 }
 
+// ══ AUTO-ASSIGNMENT ENGINE ══════════════════════════════════
+// This runs on every client that is logged in as a rider or admin.
+// A Firestore transaction ensures only ONE client actually assigns.
+// Called when:
+//   - A new delivery order arrives with no riderId
+//   - An order becomes 'ready' with no riderId (belt-and-suspenders)
+
+// We also watch ALL unassigned delivery orders to trigger assignment
+let _unassignedUnsub = null;
+let _assignmentLock  = false;
+
+function startUnassignedWatcher() {
+  if (!db) return;
+  _unassignedUnsub = db.collection('orders')
+    .where('orderType', '==', 'delivery')
+    .where('riderId',   '==', null)
+    .onSnapshot(async snap => {
+      const unassigned = snap.docs
+        .map(d => ({ ...d.data(), _id: d.id }))
+        .filter(o => !['delivered','completed','cancelled'].includes(o.status));
+
+      if (unassigned.length === 0 || _assignmentLock) return;
+
+      for (const order of unassigned) {
+        // Only try to assign if delivery is enabled
+        if (!settings.deliveryEnabled) continue;
+        await tryAssignOrder(order._id);
+      }
+    }, () => {});
+}
+
+async function tryAssignOrder(orderId) {
+  if (!db) return;
+  _assignmentLock = true;
+
+  try {
+    await db.runTransaction(async tx => {
+      const orderRef = db.collection('orders').doc(orderId);
+      const orderDoc = await tx.get(orderRef);
+      if (!orderDoc.exists) return;
+      const order = orderDoc.data();
+
+      // Already assigned by another client
+      if (order.riderId) return;
+
+      // Get all rider presences
+      const presSnap = await tx.get(
+        db.collection('presence').where('portal','==','rider').where('online','==',true)
+      );
+      const presences = presSnap.docs.map(d => ({ ...d.data(), uid: d.id }));
+
+      if (presences.length === 0) return; // No riders online at all
+
+      const available  = presences.filter(p => p.riderStatus === 'available');
+      const onDelivery = presences.filter(p => p.riderStatus === 'on_delivery');
+
+      let chosen = null;
+
+      if (available.length > 0) {
+        // FAIRNESS: assign to rider with fewest deliveries today
+        // We need today delivery counts — read from presence todayDeliveries field
+        const sorted = available.slice().sort((a, b) => {
+          const aDel = a.todayDeliveries || 0;
+          const bDel = b.todayDeliveries || 0;
+          return aDel - bDel;
+        });
+        // If tie: pick randomly among tied riders for true equality
+        const minDel = sorted[0].todayDeliveries || 0;
+        const tied   = sorted.filter(p => (p.todayDeliveries || 0) === minDel);
+        chosen = tied[Math.floor(Math.random() * tied.length)];
+      } else if (onDelivery.length > 0) {
+        // Rush mode OR no available riders: assign to whoever left earliest (most time passed)
+        // lastDeliveryStarted is the timestamp they started their current delivery
+        const sorted = onDelivery.slice().sort((a, b) => {
+          const aTs = a.lastDeliveryStarted?.seconds || 0;
+          const bTs = b.lastDeliveryStarted?.seconds || 0;
+          return aTs - bTs; // oldest first
+        });
+        chosen = sorted[0];
+      }
+
+      if (!chosen) return;
+
+      // Get rider name from employees
+      const empDoc = await tx.get(db.collection('employees').doc(chosen.uid));
+      const riderName = empDoc.exists ? empDoc.data().name : 'Rider';
+
+      // Assign order
+      tx.update(orderRef, {
+        riderId:           chosen.uid,
+        riderName:         riderName,
+        riderAssignedAt:   firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt:         firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      // Update rider presence: on_delivery + currentOrderId + lastDeliveryStarted
+      const presRef = db.collection('presence').doc(chosen.uid);
+      tx.update(presRef, {
+        riderStatus:          'on_delivery',
+        currentOrderId:       orderId,
+        lastDeliveryStarted:  firebase.firestore.FieldValue.serverTimestamp(),
+        todayDeliveries:      firebase.firestore.FieldValue.increment(1)
+      });
+    });
+  } catch(e) {
+    // Transaction aborted (another client won the race) — that's fine
+    if (!e.message?.includes('ABORTED')) console.warn('Assignment tx:', e.message);
+  } finally {
+    setTimeout(() => { _assignmentLock = false; }, 500);
+  }
+}
+
+// Start watcher after init (needs settings to be loaded first)
+firebase.auth().onAuthStateChanged(user => {
+  if (user) setTimeout(startUnassignedWatcher, 1500);
+  else { _unassignedUnsub?.(); _unassignedUnsub = null; }
+});
+
+// ══ BREAK SYSTEM ═══════════════════════════════════════════
+function startBreakListener() {
+  if (!db || !currentUser) return;
+  breakUnsub = db.collection('break_requests')
+    .where('riderId', '==', currentUser.uid)
+    .where('status',  '==', 'pending')
+    .onSnapshot(snap => {
+      if (snap.empty) {
+        // Check for approved
+        db.collection('break_requests')
+          .where('riderId', '==', currentUser.uid)
+          .where('status',  '==', 'approved')
+          .get().then(aSnap => {
+            if (!aSnap.empty) {
+              const doc = aSnap.docs[0];
+              if (myBreakStatus !== 'approved') {
+                myBreakRequestId = doc.id;
+                myBreakStatus    = 'approved';
+                handleBreakApproved();
+              }
+            } else if (myBreakStatus === 'pending') {
+              // Must have been denied
+              myBreakStatus = 'denied';
+              myBreakRequestId = null;
+              document.getElementById('break-banner').classList.remove('show');
+              toast('Break request was not approved', 'error');
+              document.getElementById('btn-break').disabled = false;
+              document.getElementById('btn-break').textContent = '☕ Request Break';
+            }
+          });
+        return;
+      }
+      // Still pending
+      const doc = snap.docs[0];
+      myBreakRequestId = doc.id;
+      myBreakStatus    = 'pending';
+      document.getElementById('break-banner').classList.add('show');
+      document.getElementById('btn-break').disabled = true;
+    }, () => {});
+}
+
+async function requestBreak() {
+  if (!db || !currentUser) return;
+  const btn = document.getElementById('btn-break');
+  btn.disabled = true; btn.textContent = 'Sending…';
+
+  try {
+    const ref = await db.collection('break_requests').add({
+      riderId:     currentUser.uid,
+      riderName:   currentEmployee?.name || 'Rider',
+      status:      'pending',
+      requestedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    myBreakRequestId = ref.id;
+    myBreakStatus    = 'pending';
+    document.getElementById('break-banner').classList.add('show');
+    btn.textContent = '☕ Pending…';
+    toast('Break request sent to manager', 'info');
+
+    // Re-start break listener to catch approval/denial
+    breakUnsub?.();
+    startBreakListener();
+  } catch(e) {
+    btn.disabled = false; btn.textContent = '☕ Request Break';
+    toast('Failed to send request', 'error');
+  }
+}
+
+function handleBreakApproved() {
+  document.getElementById('break-banner').classList.remove('show');
+  myRiderStatus = 'on_break';
+  writePresenceFull('on_break', null, true);
+  renderStatusBar();
+  // Show break overlay
+  document.getElementById('break-overlay').classList.add('show');
+  toast('Break approved! ☕', 'success');
+}
+
+async function endBreak() {
+  if (!db || !currentUser) return;
+  // Delete the approved break request
+  if (myBreakRequestId) {
+    await db.collection('break_requests').doc(myBreakRequestId).delete().catch(()=>{});
+    myBreakRequestId = null;
+  }
+  myBreakStatus = null;
+  myRiderStatus = 'available';
+  writePresenceFull('available', null, true);
+  document.getElementById('break-overlay').classList.remove('show');
+  renderStatusBar();
+  toast('Welcome back! You\'re now available 🟢', 'success');
+
+  // Re-init break listener
+  breakUnsub?.();
+  startBreakListener();
+}
+
+// ══ STATUS BAR RENDER ════════════════════════════════════════
+function renderStatusBar() {
+  const dot   = document.getElementById('status-dot');
+  const text  = document.getElementById('status-text');
+  const sub   = document.getElementById('status-sub');
+  const btn   = document.getElementById('btn-break');
+
+  dot.className = `status-dot ${myRiderStatus}`;
+
+  if (myRiderStatus === 'available') {
+    text.textContent = 'Available';
+    sub.textContent  = 'Ready for deliveries';
+    btn.style.display = 'flex';
+    btn.disabled = false;
+    btn.textContent = '☕ Request Break';
+  } else if (myRiderStatus === 'on_delivery') {
+    text.textContent = 'On Delivery';
+    const active = allMyOrders.filter(o => ['picked_up','out_for_delivery','arriving'].includes(o.status));
+    sub.textContent  = active.length > 0 ? `Delivering #${active[0].orderNumber||'—'}` : 'In transit';
+    btn.style.display = 'none';
+  } else if (myRiderStatus === 'on_break') {
+    text.textContent = 'On Break ☕';
+    sub.textContent  = 'Not receiving deliveries';
+    btn.style.display = 'none';
+  }
+}
+
+// ══ PANEL RENDER ════════════════════════════════════════════
 function renderCurrentPanel() {
   const active = document.querySelector('.panel.active');
   if (!active) return;
-  if (active.id === 'panel-active')   renderActiveList();
-  if (active.id === 'panel-queue')    renderQueueList();
-  if (active.id === 'panel-history')  renderHistoryList();
+  if (active.id === 'panel-active')  renderActiveList();
+  if (active.id === 'panel-queue')   renderQueueList();
+  if (active.id === 'panel-history') renderHistoryList();
   if (active.id === 'panel-earnings') renderEarnings();
 }
 
-// ── TAB SWITCHING ─────────────────────────────────────────
 function switchTab(tab) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
   document.getElementById(`panel-${tab}`)?.classList.add('active');
   document.getElementById(`tab-${tab}-btn`)?.classList.add('active');
-
-  if (tab === 'active')   renderActiveList();
-  if (tab === 'queue')    renderQueueList();
-  if (tab === 'history')  renderHistoryList();
-  if (tab === 'earnings') renderEarnings();
+  renderCurrentPanel();
 }
 
 function setHistoryFilter(f) {
@@ -986,482 +941,365 @@ function setHistoryFilter(f) {
   renderHistoryList();
 }
 
-// ── BADGE UPDATES ─────────────────────────────────────────
+// ══ BADGES ══════════════════════════════════════════════════
 function updateBadges() {
-  // Active = orders assigned to THIS rider that are in transit
-  const myUid  = currentUser?.uid;
-  const active = allOrders.filter(o => o.riderId === myUid && o.status === 'picked_up');
-  const queue  = allOrders.filter(o => o.status === 'ready' && !o.riderId);
-
+  const active = allMyOrders.filter(o => ['picked_up','out_for_delivery','arriving'].includes(o.status));
+  const queue  = allMyOrders.filter(o => ['confirmed','preparing','ready'].includes(o.status));
   setBadge('active-badge', active.length);
   setBadge('queue-badge',  queue.length);
 }
 
-function setBadge(id, count) {
+function setBadge(id, n) {
   const el = document.getElementById(id);
   if (!el) return;
-  el.textContent = count > 9 ? '9+' : count;
-  el.style.display = count > 0 ? 'inline-flex' : 'none';
+  el.textContent  = n > 9 ? '9+' : n;
+  el.style.display = n > 0 ? 'inline-flex' : 'none';
 }
 
-// ── ONLINE TOGGLE ─────────────────────────────────────────
-function toggleOnlineStatus() {
-  isOnline = document.getElementById('online-toggle').checked;
-  const dot   = document.getElementById('online-dot');
-  const label = document.getElementById('online-label');
-  const sub   = document.getElementById('online-sub');
-
-  if (isOnline) {
-    dot.classList.remove('offline');
-    label.textContent = 'You\'re Online';
-    sub.textContent   = 'Ready to receive deliveries';
-    toast('You are now online 🟢', 'success');
-  } else {
-    dot.classList.add('offline');
-    label.textContent = 'You\'re Offline';
-    sub.textContent   = 'You won\'t receive new delivery alerts';
-    dismissAlert();
-    toast('You are now offline', '');
-  }
-
-  // Write to presence
-  if (db && currentUser) {
-    db.collection('presence').doc(currentUser.uid).set({
-      online: isOnline, portal: 'rider',
-      lastSeen: firebase.firestore.FieldValue.serverTimestamp()
-    });
-  }
-}
-
-// ── RENDER: ACTIVE DELIVERIES ─────────────────────────────
+// ══ RENDER: ACTIVE (in transit orders) ══════════════════════
 function renderActiveList() {
   const con = document.getElementById('active-list');
   if (!con) return;
-
-  const myUid = currentUser?.uid;
-  // Orders assigned to me: picked_up (in transit)
-  // OR orders I accepted (riderId = me) with ready status
-  const myOrders = allOrders.filter(o =>
-    o.riderId === myUid && ['ready','picked_up'].includes(o.status)
-  );
-
-  if (!myOrders.length) {
-    con.innerHTML = `<div class="empty-state">
-      <div class="emoji">🛵</div>
-      <h3>No active deliveries</h3>
-      <p>Check the Queue tab for available orders</p>
-    </div>`;
+  const list = allMyOrders.filter(o => ['picked_up','out_for_delivery','arriving'].includes(o.status));
+  if (!list.length) {
+    con.innerHTML = `<div class="empty-state"><div class="emoji">🏍</div><h3>No active delivery</h3><p>When you pick up an order it appears here</p></div>`;
+    renderStatusBar();
     return;
   }
-
   con.innerHTML = '';
-  myOrders.forEach(o => buildOrderCard(o, con, 'active'));
+  list.forEach(o => buildCard(con, o, 'active'));
+  renderStatusBar();
 }
 
-// ── RENDER: QUEUE ─────────────────────────────────────────
+// ══ RENDER: QUEUE (assigned but not yet picked up) ════════════
 function renderQueueList() {
   const con = document.getElementById('queue-list');
   if (!con) return;
-
-  // Unassigned delivery orders that are ready
-  const queued = allOrders.filter(o => o.status === 'ready' && !o.riderId);
-
-  if (!queued.length) {
-    con.innerHTML = `<div class="empty-state">
-      <div class="emoji">📦</div>
-      <h3>Queue is empty</h3>
-      <p>New delivery orders will appear here instantly</p>
-    </div>`;
+  const list = allMyOrders.filter(o => ['confirmed','preparing','ready'].includes(o.status));
+  if (!list.length) {
+    con.innerHTML = `<div class="empty-state"><div class="emoji">📦</div><h3>Nothing queued</h3><p>Orders assigned to you will appear here</p></div>`;
     return;
   }
-
   con.innerHTML = '';
-  queued.forEach(o => buildOrderCard(o, con, 'queue'));
+  list.forEach(o => buildCard(con, o, 'queue'));
 }
 
-// ── RENDER: HISTORY ──────────────────────────────────────
+// ══ RENDER: HISTORY ══════════════════════════════════════════
 function renderHistoryList() {
   const con = document.getElementById('history-list');
   if (!con) return;
+  const now      = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const weekStart  = new Date(todayStart.getTime() - 6*24*60*60*1000);
 
-  const myUid = currentUser?.uid;
-  const now   = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const weekAgo = new Date(today.getTime() - 6*24*60*60*1000);
-
-  let list = allOrders.filter(o =>
-    o.riderId === myUid && o.status === 'delivered'
-  );
-
+  let list = allMyOrders.filter(o => o.status === 'delivered');
   if (historyFilter === 'today') {
     list = list.filter(o => {
       const ts = o.timestamp?.seconds ? new Date(o.timestamp.seconds*1000) : new Date(0);
-      return ts >= today;
+      return ts >= todayStart;
     });
   } else {
     list = list.filter(o => {
       const ts = o.timestamp?.seconds ? new Date(o.timestamp.seconds*1000) : new Date(0);
-      return ts >= weekAgo;
+      return ts >= weekStart;
     });
   }
 
   if (!list.length) {
-    con.innerHTML = `<div class="empty-state">
-      <div class="emoji">📋</div>
-      <h3>No deliveries ${historyFilter === 'today' ? 'today' : 'this week'}</h3>
-      <p>Completed deliveries will appear here</p>
-    </div>`;
+    con.innerHTML = `<div class="empty-state"><div class="emoji">📋</div><h3>No deliveries ${historyFilter==='today'?'today':'this week'}</h3></div>`;
     return;
   }
-
   con.innerHTML = '';
-  list.forEach(o => buildOrderCard(o, con, 'history'));
+  list.forEach(o => buildCard(con, o, 'history'));
 }
 
-// ── BUILD ORDER CARD ──────────────────────────────────────
-function buildOrderCard(o, container, context) {
+// ══ BUILD ORDER CARD ═════════════════════════════════════════
+function buildCard(container, o, ctx) {
   const ts      = o.timestamp?.seconds ? new Date(o.timestamp.seconds*1000) : new Date();
   const elapsed = Math.floor((Date.now() - ts.getTime()) / 60000);
-  const elClass = elapsed >= 45 ? 'late' : elapsed >= 25 ? 'warn' : '';
+  const elClass = elapsed >= 40 ? 'late' : elapsed >= 20 ? 'warn' : '';
   const timeStr = ts.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   const cur     = settings.currency || '$';
   const addr    = o.deliveryAddress;
 
   const card = document.createElement('div');
   card.className = `order-card status-${o.status}`;
-  if (context === 'queue') card.classList.add('new-pulse');
 
-  // Items HTML
+  // Items
   const itemsHTML = (o.items||[]).map(i =>
     `<div class="oc-item-row">
       <div class="oc-qty">${i.qty||1}</div>
       <div>
         <div class="oc-item-name">${escHtml(i.name)}</div>
-        ${i.note ? `<div class="oc-item-note">↳ ${escHtml(i.note)}</div>` : ''}
+        ${i.note?`<div class="oc-item-note">↳ ${escHtml(i.note)}</div>`:''}
       </div>
     </div>`
   ).join('');
 
-  // Status progress bar
-  const stepsHTML = buildStatusSteps(o.status);
-
-  // Address block
+  // Address
   const addrHTML = addr ? `
     <div class="oc-address">
-      <strong>${escHtml(addr.formatted || addr.street || '—')}</strong>
-      ${addr.apt ? `<div>Apt/Unit: ${escHtml(addr.apt)}</div>` : ''}
-      ${addr.instructions ? `<div class="addr-note">📝 ${escHtml(addr.instructions)}</div>` : ''}
-      ${(addr.phone || o.deliveryPhone) ? `<div class="addr-phone">📞 ${escHtml(addr.phone || o.deliveryPhone)}</div>` : ''}
+      <div class="addr-main">📍 ${escHtml(addr.formatted||addr.street||'—')}</div>
+      ${addr.apt?`<div class="addr-apt">Unit / Apt: ${escHtml(addr.apt)}</div>`:''}
+      ${addr.instructions?`<div class="addr-note">📝 ${escHtml(addr.instructions)}</div>`:''}
+      ${(addr.phone||o.deliveryPhone)?`<div class="addr-phone">📞 ${escHtml(addr.phone||o.deliveryPhone)}</div>`:''}
     </div>` : '';
 
-  // Action buttons
-  const actionsHTML = buildActionButtons(o, context);
+  // Actions
+  const actionsHTML = buildActions(o, ctx);
 
   card.innerHTML = `
     <div class="oc-head">
       <span class="oc-num">#${o.orderNumber||'—'}</span>
       <span class="badge badge-${STATUS_COLORS[o.status]||'grey'}">${STATUS_LABELS[o.status]||o.status}</span>
-      ${o.customerName ? `<span style="font-size:12px;color:var(--tm);">👤 ${escHtml(o.customerName)}</span>` : ''}
+      ${o.customerName?`<span style="font-size:12px;color:var(--tm);">👤 ${escHtml(o.customerName)}</span>`:''}
       <span class="oc-time">${timeStr}</span>
     </div>
-    ${stepsHTML}
+    ${buildStatusProgress(o.status)}
     ${addrHTML}
     <div class="oc-items">${itemsHTML}</div>
     <div class="oc-foot">
-      <span class="oc-elapsed ${elClass}">⏱ ${elapsed < 1 ? 'Just now' : elapsed+'m ago'}</span>
-      <div class="oc-total">${cur}${(o.total||0).toFixed(2)}</div>
+      <span class="oc-elapsed ${elClass}">⏱ ${elapsed<1?'Just now':elapsed+'m ago'}</span>
+      <span class="oc-total">${cur}${(o.total||0).toFixed(2)}</span>
     </div>
     ${actionsHTML}`;
 
   container.appendChild(card);
 }
 
-function buildStatusSteps(currentStatus) {
-  const statusOrder = ['confirmed','preparing','ready','picked_up','delivered'];
-  const currentIdx  = statusOrder.indexOf(currentStatus);
-
-  let html = '<div class="status-steps">';
+// ══ STATUS PROGRESS BAR ══════════════════════════════════════
+function buildStatusProgress(currentStatus) {
+  const idx = STATUS_ORDER_DEL.indexOf(currentStatus);
+  let html  = '<div class="status-steps">';
   DELIVERY_STEPS.forEach((step, i) => {
-    const stepIdx = statusOrder.indexOf(step.key);
-    const done    = stepIdx < currentIdx;
-    const active  = stepIdx === currentIdx;
-    html += `<div class="step ${done?'done':''} ${active?'active':''}">
+    const si   = STATUS_ORDER_DEL.indexOf(step.key);
+    const done = si < idx;
+    const act  = si === idx;
+    html += `<div class="step ${done?'done':''} ${act?'active':''}">
       <div class="step-dot"></div>
-      <span class="step-label">${step.label}</span>
+      <div class="step-label">${step.label}</div>
     </div>`;
     if (i < DELIVERY_STEPS.length - 1) {
-      html += `<div class="step-line ${done || (active && stepIdx<currentIdx)?'done':''}"></div>`;
+      html += `<div class="step-line ${done?'done':''}"></div>`;
     }
   });
-  html += '</div>';
-  return html;
+  return html + '</div>';
 }
 
-function buildActionButtons(o, context) {
-  const addr = o.deliveryAddress;
+// ══ ACTION BUTTONS ════════════════════════════════════════════
+function buildActions(o, ctx) {
+  if (ctx === 'history') {
+    const delivTs  = o.statusTimestamps?.delivered;
+    const delivTime = delivTs?.seconds ? new Date(delivTs.seconds*1000).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '—';
+    return `<div class="action-row"><span style="font-size:11px;color:var(--td);">✅ Delivered at ${delivTime}</span></div>`;
+  }
+
+  const addr  = o.deliveryAddress;
   const mapQ  = addr ? encodeURIComponent(addr.formatted || addr.street) : '';
   const phone = addr?.phone || o.deliveryPhone;
   const tel   = phone ? phone.replace(/\D/g,'') : '';
+  const id    = o._id;
 
   let btns = '';
 
-  if (context === 'queue' && o.status === 'ready') {
-    btns += `<button class="abtn abtn-pickup" onclick="acceptFromQueue('${o._id}')">✓ Accept Delivery</button>`;
-    if (mapQ) btns += `<button class="abtn abtn-nav" onclick="navigate('${mapQ}')">🗺 Navigate</button>`;
-  }
-
-  if (context === 'active') {
+  // QUEUE context: waiting for kitchen (confirmed/preparing/ready)
+  if (ctx === 'queue') {
     if (o.status === 'ready') {
-      // I accepted it but haven't picked up yet
-      if (mapQ) btns += `<button class="abtn abtn-nav" onclick="navigate('${mapQ}')">🗺 Navigate to Pickup</button>`;
-      btns += `<button class="abtn abtn-pickup" onclick="markPickedUp('${o._id}')">📦 Picked Up from Kitchen</button>`;
+      // Chef has marked it ready — rider can now pick it up
+      btns += `<button class="abtn abtn-gold" onclick="markPickedUp('${id}')">📦 Picked Up from Kitchen</button>`;
+      if (mapQ) btns += `<button class="abtn abtn-ghost" onclick="navigate('${mapQ}')">🗺 Directions</button>`;
+    } else {
+      // Still being prepared
+      btns += `<span class="queued-badge">⏳ Waiting for kitchen to finish…</span>`;
     }
-    if (o.status === 'picked_up') {
-      if (mapQ) btns += `<button class="abtn abtn-nav" onclick="navigate('${mapQ}')">🗺 Navigate to Customer</button>`;
-      btns += `<button class="abtn abtn-delivered" onclick="markDelivered('${o._id}')">✓ Mark Delivered</button>`;
-      if (tel) btns += `<button class="abtn abtn-call" onclick="callCustomer('${tel}')">📞</button>`;
-    }
+    if (tel) btns += `<button class="abtn abtn-ghost" onclick="callNum('${tel}')">📞</button>`;
   }
 
-  if (context === 'history') {
-    const delivTs = o.statusTimestamps?.delivered;
-    const delivTime = delivTs?.seconds ? new Date(delivTs.seconds*1000).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '—';
-    btns += `<span style="font-size:11px;color:var(--td);">Delivered at ${delivTime}</span>`;
+  // ACTIVE context: in transit
+  if (ctx === 'active') {
+    if (o.status === 'picked_up') {
+      btns += `<button class="abtn abtn-amber" onclick="markOutForDelivery('${id}')">🏍 Out for Delivery</button>`;
+      if (mapQ) btns += `<button class="abtn abtn-blue" onclick="navigate('${mapQ}')">🗺 Navigate</button>`;
+    }
+    if (o.status === 'out_for_delivery') {
+      btns += `<button class="abtn abtn-green" onclick="markArriving('${id}')">📍 Arrived at Location</button>`;
+      if (mapQ) btns += `<button class="abtn abtn-blue" onclick="navigate('${mapQ}')">🗺 Navigate</button>`;
+      if (tel)  btns += `<button class="abtn abtn-ghost" onclick="callNum('${tel}')">📞</button>`;
+    }
+    if (o.status === 'arriving') {
+      btns += `<button class="abtn abtn-green" onclick="markDelivered('${id}')">✅ Order Delivered</button>`;
+      if (tel) btns += `<button class="abtn abtn-ghost" onclick="callNum('${tel}')">📞</button>`;
+    }
   }
 
   return btns ? `<div class="action-row">${btns}</div>` : '';
 }
 
-// ── ORDER ACTIONS ─────────────────────────────────────────
-async function acceptFromQueue(orderId) {
-  if (!db || !currentUser) return;
-  const myUid = currentUser.uid;
-  const riderName = currentEmployee?.name || currentUser.email;
-
-  try {
-    await db.collection('orders').doc(orderId).update({
-      riderId:    myUid,
-      riderName:  riderName,
-      riderAcceptedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      updatedAt:  firebase.firestore.FieldValue.serverTimestamp()
-    });
-    toast('Delivery accepted! 🛵', 'success');
-    switchTab('active');
-  } catch(e) {
-    toast('Failed to accept. Try again.', 'error');
+// ══ STATUS UPDATE FUNCTIONS ═══════════════════════════════════
+async function updateOrderStatus(orderId, newStatus, extraFields) {
+  if (!db) return;
+  const update = {
+    status: newStatus,
+    [`statusTimestamps.${newStatus}`]: firebase.firestore.FieldValue.serverTimestamp(),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    ...extraFields
+  };
+  await db.collection('orders').doc(orderId).update(update).catch(e => {
+    toast('Update failed. Check connection.', 'error');
     console.warn(e);
-  }
+  });
 }
 
-async function markPickedUp(orderId) {
-  if (!db) return;
-  try {
-    await db.collection('orders').doc(orderId).update({
-      status: 'picked_up',
-      'statusTimestamps.picked_up': firebase.firestore.FieldValue.serverTimestamp(),
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    toast('Marked as picked up 📦', 'success');
-  } catch(e) {
-    toast('Update failed', 'error');
-    console.warn(e);
-  }
+async function markPickedUp(id) {
+  await updateOrderStatus(id, 'picked_up', { pickedUpBy: currentEmployee?.name });
+  myRiderStatus = 'on_delivery';
+  writePresenceFull('on_delivery', id, true);
+  renderStatusBar();
+  toast('Picked up! Head to the customer 🏍', 'success');
 }
 
-async function markDelivered(orderId) {
-  if (!db) return;
-  try {
-    await db.collection('orders').doc(orderId).update({
-      status: 'delivered',
-      'statusTimestamps.delivered': firebase.firestore.FieldValue.serverTimestamp(),
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    toast('Delivered! Great work 🎉', 'success');
-  } catch(e) {
-    toast('Update failed', 'error');
-    console.warn(e);
-  }
+async function markOutForDelivery(id) {
+  await updateOrderStatus(id, 'out_for_delivery');
+  toast('On the way! 🏍', 'success');
+}
+
+async function markArriving(id) {
+  await updateOrderStatus(id, 'arriving');
+  toast('Customer notified you\'re here 📍', 'success');
+}
+
+async function markDelivered(id) {
+  await updateOrderStatus(id, 'delivered', { deliveredBy: currentEmployee?.name });
+  // Reset rider to available
+  myRiderStatus = 'available';
+  writePresenceFull('available', null, true);
+  renderStatusBar();
+  toast('Delivery complete! Great work 🎉', 'success');
 }
 
 function navigate(query) {
-  const url = `https://www.google.com/maps/dir/?api=1&destination=${query}&travelmode=driving`;
-  window.open(url, '_blank');
+  window.open(`https://www.google.com/maps/dir/?api=1&destination=${query}&travelmode=driving`, '_blank');
 }
 
-function callCustomer(tel) {
+function callNum(tel) {
   window.location.href = `tel:${tel}`;
 }
 
-// ── NEW ORDER ALERT ───────────────────────────────────────
-let alertRingCount = 0;
-let alertRingInterval = null;
-
-function showNewOrderAlert(order) {
-  if (!isOnline) return;
-  alertOrderId   = order._id;
-  alertRingCount = 0;
-
-  const cur   = settings.currency || '$';
-  const addr  = order.deliveryAddress;
-  const addrStr = addr?.formatted || addr?.street || 'Address on file';
-
-  document.getElementById('oa-order-num').textContent = `#${order.orderNumber || '—'}`;
-  document.getElementById('oa-sub').textContent       = `${(order.items||[]).length} items · ${cur}${(order.total||0).toFixed(2)}`;
-  document.getElementById('oa-addr').textContent      = addrStr;
-
-  document.getElementById('order-alert-overlay').classList.add('ringing');
-  startAlertSound();
-
-  // Auto-dismiss after 20 seconds if rider doesn't respond
-  alertRingInterval = setTimeout(() => {
-    dismissAlert();
-    toast('Order auto-skipped', '');
-  }, 20000);
-}
-
-function startAlertSound() {
-  // Use Web Audio API to generate a simple alert tone (no file needed)
-  try {
-    const ctx  = new (window.AudioContext || window.webkitAudioContext)();
-    const play = () => {
-      if (!alertOrderId) return;
-      const osc  = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.frequency.setValueAtTime(880, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.3);
-      gain.gain.setValueAtTime(0.3, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.4);
-    };
-    play();
-    // Repeat every 2s
-    alertSound = setInterval(play, 2000);
-  } catch(e) { /* AudioContext not available */ }
-}
-
-function stopAlertSound() {
-  if (alertSound) { clearInterval(alertSound); alertSound = null; }
-}
-
-function dismissAlert() {
-  alertOrderId = null;
-  clearTimeout(alertRingInterval);
-  stopAlertSound();
-  document.getElementById('order-alert-overlay').classList.remove('ringing');
-}
-
-async function acceptDelivery() {
-  if (!alertOrderId) return;
-  const id = alertOrderId;
-  dismissAlert();
-  await acceptFromQueue(id);
-}
-
-// ── EARNINGS ──────────────────────────────────────────────
+// ══ EARNINGS ══════════════════════════════════════════════════
 function renderEarnings() {
   const con = document.getElementById('earnings-content');
-  if (!con) return;
+  if (!con || !document.getElementById('panel-earnings').classList.contains('active')) return;
 
-  const myUid     = currentUser?.uid;
   const cur       = settings.currency || '$';
   const delivFee  = settings.deliveryFee || 0;
+  const now       = new Date();
+  const todayStart= new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const weekStart = new Date(todayStart.getTime() - 6*24*60*60*1000);
 
-  const now    = new Date();
-  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const weekStart  = new Date(todayStart.getTime() - 6*24*60*60*1000);
+  const delivered  = allMyOrders.filter(o => o.status === 'delivered');
+  const todayDel   = delivered.filter(o => (o.timestamp?.seconds ? new Date(o.timestamp.seconds*1000) : new Date(0)) >= todayStart);
+  const weekDel    = delivered.filter(o => (o.timestamp?.seconds ? new Date(o.timestamp.seconds*1000) : new Date(0)) >= weekStart);
+  const inProgress = allMyOrders.filter(o => ['picked_up','out_for_delivery','arriving'].includes(o.status)).length;
 
-  const myDeliveries = allOrders.filter(o => o.riderId === myUid && o.status === 'delivered');
-  const todayDel     = myDeliveries.filter(o => {
-    const ts = o.timestamp?.seconds ? new Date(o.timestamp.seconds*1000) : new Date(0);
-    return ts >= todayStart;
-  });
-  const weekDel = myDeliveries.filter(o => {
-    const ts = o.timestamp?.seconds ? new Date(o.timestamp.seconds*1000) : new Date(0);
-    return ts >= weekStart;
-  });
-
-  const todayEarnings = todayDel.length * delivFee;
-  const weekEarnings  = weekDel.length * delivFee;
-  const totalEarnings = myDeliveries.length * delivFee;
-
-  // Active (in progress) orders
-  const inProgress = allOrders.filter(o => o.riderId === myUid && o.status === 'picked_up').length;
+  const emp      = currentEmployee;
+  const initials = (emp?.name||'R').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
 
   const recentHTML = todayDel.slice(0,10).map(o => {
-    const ts = o.timestamp?.seconds ? new Date(o.timestamp.seconds*1000) : new Date();
-    const addr = o.deliveryAddress?.street || 'Delivery';
-    return `<div class="earn-history-item">
-      <div class="earn-history-icon">📦</div>
-      <div class="earn-history-info">
-        <div class="earn-history-title">#${o.orderNumber||'—'} · ${escHtml(o.customerName||'Customer')}</div>
-        <div class="earn-history-sub">${escHtml(addr)} · ${ts.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>
+    const ts   = o.timestamp?.seconds ? new Date(o.timestamp.seconds*1000) : new Date();
+    const addr = o.deliveryAddress?.street || o.customerName || 'Delivery';
+    return `<div class="earn-hist-item">
+      <div class="earn-hist-ico">📦</div>
+      <div class="earn-hist-info">
+        <div class="earn-hist-title">#${o.orderNumber||'—'} · ${escHtml(o.customerName||'Customer')}</div>
+        <div class="earn-hist-sub">${escHtml(addr)} · ${ts.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</div>
       </div>
-      <div class="earn-history-amt">${cur}${delivFee.toFixed(2)}</div>
+      <div class="earn-hist-amt">${cur}${delivFee.toFixed(2)}</div>
     </div>`;
   }).join('');
 
-  // Rider profile card
-  const emp       = currentEmployee;
-  const initials  = (emp?.name||'R').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-
   con.innerHTML = `
     <div class="profile-card">
-      <div class="profile-avatar">${initials}</div>
+      <div class="profile-av">${initials}</div>
       <div>
-        <div class="profile-name">${escHtml(emp?.name || 'Rider')}</div>
+        <div class="profile-name">${escHtml(emp?.name||'Rider')}</div>
         <div class="profile-role">Delivery Rider</div>
-        ${inProgress > 0 ? `<div style="margin-top:4px;"><span class="badge badge-blue">🏍 ${inProgress} in transit</span></div>` : ''}
+        ${inProgress>0?`<div style="margin-top:5px;"><span class="badge badge-blue">🏍 ${inProgress} in transit</span></div>`:''}
       </div>
     </div>
-
     <div class="earn-stats">
       <div class="earn-card highlight">
-        <div class="earn-label">Today's Earnings</div>
-        <div class="earn-val">${cur}${todayEarnings.toFixed(2)}</div>
+        <div class="earn-label">Today</div>
+        <div class="earn-val">${cur}${(todayDel.length*delivFee).toFixed(2)}</div>
         <div class="earn-sub">${todayDel.length} deliveries</div>
       </div>
       <div class="earn-card">
         <div class="earn-label">This Week</div>
-        <div class="earn-val">${cur}${weekEarnings.toFixed(2)}</div>
+        <div class="earn-val">${cur}${(weekDel.length*delivFee).toFixed(2)}</div>
         <div class="earn-sub">${weekDel.length} deliveries</div>
       </div>
       <div class="earn-card">
         <div class="earn-label">All Time</div>
-        <div class="earn-val">${cur}${totalEarnings.toFixed(2)}</div>
-        <div class="earn-sub">${myDeliveries.length} delivered</div>
+        <div class="earn-val">${cur}${(delivered.length*delivFee).toFixed(2)}</div>
+        <div class="earn-sub">${delivered.length} total</div>
       </div>
       <div class="earn-card">
         <div class="earn-label">Per Delivery</div>
         <div class="earn-val">${cur}${delivFee.toFixed(2)}</div>
-        <div class="earn-sub">${delivFee > 0 ? 'Fixed rate' : 'Not set'}</div>
+        <div class="earn-sub">${delivFee>0?'Fixed rate':'Not set by admin'}</div>
       </div>
     </div>
-
-    ${todayDel.length > 0 ? `
-      <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--td);margin:16px 0 10px;font-weight:700;">Today's Deliveries</div>
-      ${recentHTML}
-    ` : `<div class="empty-state"><div class="emoji">💰</div><h3>No deliveries today yet</h3><p>Earnings will appear here after deliveries</p></div>`}`;
+    ${todayDel.length>0
+      ? `<div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--td);margin:16px 0 10px;font-weight:700;">Today's Deliveries</div>${recentHTML}`
+      : '<div class="empty-state"><div class="emoji">💰</div><h3>No deliveries today</h3><p>Earnings appear here after each delivery</p></div>'}`;
 }
 
-// ── MODAL ─────────────────────────────────────────────────
-function openModal(title, bodyHTML) {
-  document.getElementById('modal-title-text').textContent = title;
-  document.getElementById('modal-body').innerHTML = bodyHTML;
-  document.getElementById('modal-overlay').classList.add('open');
+// ══ ALERT SYSTEM ══════════════════════════════════════════════
+function showOrderAlert(order) {
+  alertOrderId = order._id;
+  const cur  = settings.currency || '$';
+  const addr = order.deliveryAddress;
+  document.getElementById('oa-num').textContent  = `#${order.orderNumber||'—'}`;
+  document.getElementById('oa-sub').textContent  = `${(order.items||[]).length} item(s) · ${cur}${(order.total||0).toFixed(2)}`;
+  document.getElementById('oa-addr').textContent = addr?.formatted || addr?.street || 'Address on file';
+  document.getElementById('order-alert').classList.add('show');
+  playAlertTone();
+  alertSoundInterval = setInterval(playAlertTone, 2200);
+  setTimeout(dismissAlert, 15000);
 }
 
-function closeModal(e) {
-  if (!e || e.target === document.getElementById('modal-overlay')) {
-    document.getElementById('modal-overlay').classList.remove('open');
-  }
+function acknowledgeOrderAlert() {
+  dismissAlert();
+  switchTab('queue');
 }
 
-// ── UTILS ─────────────────────────────────────────────────
+function dismissAlert() {
+  alertOrderId = null;
+  clearInterval(alertSoundInterval); alertSoundInterval = null;
+  document.getElementById('order-alert').classList.remove('show');
+}
+
+function playAlertTone() {
+  try {
+    const ctx  = new (window.AudioContext || window.webkitAudioContext)();
+    const play = (freq, start, dur) => {
+      const osc  = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(.3, ctx.currentTime + start);
+      gain.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + start + dur);
+      osc.start(ctx.currentTime + start);
+      osc.stop(ctx.currentTime + start + dur + .05);
+    };
+    play(880, 0,   .15);
+    play(660, .18, .15);
+    play(880, .36, .25);
+  } catch(e) {}
+}
+
+// ══ UTILS ══════════════════════════════════════════════════════
 function escHtml(s) {
-  return String(s||'')
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 let _toastTimer = null;
@@ -1470,14 +1308,12 @@ function toast(msg, type='') {
   el.textContent = msg;
   el.className   = 'show' + (type ? ' t-'+type : '');
   clearTimeout(_toastTimer);
-  _toastTimer = setTimeout(() => { el.className = ''; }, 3000);
+  _toastTimer = setTimeout(() => { el.className = ''; }, 3200);
 }
 
-// ── SERVICE WORKER REGISTRATION ───────────────────────────
+// ══ SERVICE WORKER ═════════════════════════════════════════════
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
-  });
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
 }
 </script>
 </body>
