@@ -502,17 +502,7 @@ function resetLoginBtn() {
 }
 
 // ── PRE-LOGIN SETTINGS (updates login modal name before user signs in) ─────
-(function preloadSettings() {
-  if (!db) return;
-  db.collection('settings').doc('global').get().then(snap => {
-    if (!snap.exists) return;
-    const name = snap.data().restaurantName;
-    if (name) {
-      const el = document.getElementById('login-logo');
-      if (el) el.textContent = name;
-    }
-  }).catch(() => {});
-})();
+startSettingsListener();
   
 // ══ AUTH STATE ══════════════════════════════════════════════
 firebase.auth().onAuthStateChanged(async user => {
@@ -556,8 +546,8 @@ firebase.auth().onAuthStateChanged(async user => {
 });
 
 function teardown() {
-  [ordersUnsub, settingsUnsub, presenceUnsub, breakUnsub, freezeUnsub].forEach(u => u?.());
-  ordersUnsub = settingsUnsub = presenceUnsub = breakUnsub = freezeUnsub = null;
+[ordersUnsub, presenceUnsub, breakUnsub, freezeUnsub].forEach(u => u?.());
+ordersUnsub = presenceUnsub = breakUnsub = freezeUnsub = null;
   dismissAlert();
 }
 
@@ -614,17 +604,35 @@ function writePresenceFull(riderStatus, currentOrderId, online) {
 }
 
 // ══ SETTINGS LISTENER ══════════════════════════════════════
+function applyRestaurantName(name) {
+  const restaurantName = name || localStorage.getItem('restaurantName') || 'Restaurant';
+
+  document.getElementById('login-logo').textContent = restaurantName;
+  document.getElementById('tb-brand').textContent = restaurantName;
+
+  document.title = restaurantName + ' - Rider Portal';
+}
+
 function startSettingsListener() {
-  if (!db) return;
+  if (!db || settingsUnsub) return;
+
+  const cachedName = localStorage.getItem('restaurantName');
+  if (cachedName) applyRestaurantName(cachedName);
+
   settingsUnsub = db.collection('settings').doc('global').onSnapshot(snap => {
     if (!snap.exists) return;
+
     settings = { ...settings, ...snap.data() };
-    const name = settings.restaurantName || 'Gristo';
-    document.getElementById('tb-brand').textContent   = name;
-    document.getElementById('login-logo').textContent = name;
-    document.title = name + ' — Rider Portal';
-    if (settings.brandColors) applyBrandColors(settings.brandColors);
-  });
+
+    if (settings.restaurantName) {
+      localStorage.setItem('restaurantName', settings.restaurantName);
+      applyRestaurantName(settings.restaurantName);
+    }
+
+    if (settings.brandColors) {
+      applyBrandColors(settings.brandColors);
+    }
+  }, err => console.warn('settings listener:', err));
 }
 
 function applyBrandColors(bc) {
