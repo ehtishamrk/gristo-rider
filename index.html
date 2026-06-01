@@ -501,6 +501,19 @@ function resetLoginBtn() {
   btn.disabled = false; btn.textContent = 'Sign In →';
 }
 
+// ── PRE-LOGIN SETTINGS (updates login modal name before user signs in) ─────
+(function preloadSettings() {
+  if (!db) return;
+  db.collection('settings').doc('global').get().then(snap => {
+    if (!snap.exists) return;
+    const name = snap.data().restaurantName;
+    if (name) {
+      const el = document.getElementById('login-logo');
+      if (el) el.textContent = name;
+    }
+  }).catch(() => {});
+})();
+  
 // ══ AUTH STATE ══════════════════════════════════════════════
 firebase.auth().onAuthStateChanged(async user => {
   if (user) {
