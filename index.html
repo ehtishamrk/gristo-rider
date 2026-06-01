@@ -251,7 +251,7 @@ body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif
 <!-- ══ LOGIN ══════════════════════════════════════════════ -->
 <div id="login-overlay">
   <div class="login-wrap">
-    <div class="login-logo" id="login-logo">Restaurant</div>
+    <div class="login-logo" id="login-logo" style="visibility:hidden">Restaurant</div>
     <div class="login-role">Rider Portal</div>
     <input type="email" id="login-email" class="login-field" placeholder="Email address"
       autocomplete="email" autocapitalize="none"
@@ -607,8 +607,20 @@ function writePresenceFull(riderStatus, currentOrderId, online) {
 function applyRestaurantName(name) {
   const restaurantName = name || localStorage.getItem('restaurantName') || 'Restaurant';
 
-  document.getElementById('login-logo').textContent = restaurantName;
-  document.getElementById('tb-brand').textContent = restaurantName;
+  const loginLogo = document.getElementById('login-logo');
+  const tbBrand = document.getElementById('tb-brand');
+
+  if (loginLogo) {
+    loginLogo.textContent = restaurantName;
+    loginLogo.style.visibility = 'visible';
+  }
+
+  if (tbBrand) {
+    tbBrand.textContent = restaurantName;
+  }
+
+  const kdsBrand = document.getElementById('kds-brand');
+  if (kdsBrand) kdsBrand.textContent = restaurantName + ' - Kitchen Display';
 
   document.title = restaurantName + ' - Rider Portal';
 }
