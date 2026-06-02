@@ -309,6 +309,11 @@ body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif
       📋 History
     </button>
     <button class="nav-tab" id="tab-earnings-btn" onclick="switchTab('earnings')">
+
+<button class="nav-tab" id="tab-notifications-btn" onclick="switchTab('notifications')">
+  🔔 Notifications <span class="tab-badge" id="notifications-badge" style="display:none">0</span>
+</button>
+      
       💰 Earnings
     </button>
   </div>
@@ -567,8 +572,8 @@ firebase.auth().onAuthStateChanged(async user => {
 });
 
 function teardown() {
-[ordersUnsub, presenceUnsub, breakUnsub, freezeUnsub].forEach(u => u?.());
-ordersUnsub = presenceUnsub = breakUnsub = freezeUnsub = null;
+[ordersUnsub, presenceUnsub, breakUnsub, freezeUnsub, staffNotificationsUnsub].forEach(u => u?.());
+ordersUnsub = presenceUnsub = breakUnsub = freezeUnsub = staffNotificationsUnsub = null;
   dismissAlert();
 }
 
@@ -595,6 +600,7 @@ function initRiderApp() {
   startSettingsListener();
   startOrdersListener();
   startBreakListener();
+  startStaffNotificationsListener();
   writePresenceFull('available', null, true);
   window.addEventListener('beforeunload', () => writePresenceFull('offline', null, false));
   document.addEventListener('visibilitychange', () => {
