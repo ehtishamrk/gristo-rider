@@ -308,14 +308,13 @@ body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif
     <button class="nav-tab" id="tab-history-btn" onclick="switchTab('history')">
       📋 History
     </button>
-    <button class="nav-tab" id="tab-earnings-btn" onclick="switchTab('earnings')">
+<button class="nav-tab" id="tab-earnings-btn" onclick="switchTab('earnings')">
+  💰 Earnings
+</button>
 
 <button class="nav-tab" id="tab-notifications-btn" onclick="switchTab('notifications')">
   🔔 Notifications <span class="tab-badge" id="notifications-badge" style="display:none">0</span>
 </button>
-      
-      💰 Earnings
-    </button>
   </div>
 
   <!-- ── ACTIVE PANEL ─── -->
@@ -346,6 +345,14 @@ body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif
     <div id="earnings-content"><div class="spinner"></div></div>
   </div>
 
+<div class="panel" id="panel-notifications">
+  <div class="page-hd">
+    <div class="page-title">Notifications</div>
+    <button class="btn btn-ghost btn-sm" onclick="markAllStaffNotificationsRead()">Mark All Read</button>
+  </div>
+  <div id="staff-notifications-list"><div class="spinner"></div></div>
+</div>
+  
 </div>
 
 <!-- ══ NEW ORDER ASSIGNED ALERT ════════════════════════════ -->
@@ -418,6 +425,9 @@ let settingsUnsub = null;
 let presenceUnsub = null;
 let breakUnsub    = null;
 let freezeUnsub   = null;
+  let staffNotifications = [];
+let staffNotificationsUnsub = null;
+let knownStaffNotifIds = new Set();
 
 // Status labels/colors (matching entire system)
 const STATUS_LABELS = {
@@ -729,9 +739,11 @@ function startOrdersListener() {
       renderEarnings();
 
       // Alert for new assignment
-      if (newAssigned.length > 0) {
-        showOrderAlert(newAssigned[0]);
-      }
+if (newAssigned.length > 0) {
+  playChime();
+  showOrderAlert(newAssigned[0]);
+  toast('New delivery assigned', 'success');
+}
     }, e => console.warn('orders listener:', e));
 }
 
@@ -985,6 +997,7 @@ function renderCurrentPanel() {
   if (active.id === 'panel-queue')   renderQueueList();
   if (active.id === 'panel-history') renderHistoryList();
   if (active.id === 'panel-earnings') renderEarnings();
+  if (active.id === 'panel-notifications') renderStaffNotifications();
 }
 
 function switchTab(tab) {
@@ -1376,6 +1389,104 @@ function toast(msg, type='') {
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
 }
+
+function fmtStaffNotifTs(ts) {
+  if (!ts) return '-';
+  const d = ts.seconds ? new Date(ts.seconds * 1000) : new Date(ts);
+  return d.toLocaleString([], { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+
+function startStaffNotificationsListener() {
+  if (!db || !currentUser) return;
+  if (staffNotificationsUnsub) staffNotificationsUnsub();
+
+  staffNotificationsUnsub = db.collection('staff_notifications')
+    .orderBy('createdAt', 'desc')
+    .limit(100)
+    .onSnapshot(snap => {
+      const incoming = snap.docs
+        .map(d => ({ ...d.data(), _id: d.id }))
+        .filter(n => n.toUid === currentUser.uid || n.role === 'rider' || n.role === 'all');
+
+      incoming.forEach(n => {
+        if (knownStaffNotifIds.size > 0 && !knownStaffNotifIds.has(n._id) && !n.read) {
+          playChime();
+          toast(n.title || 'New notification', 'success');
+        }
+      });
+
+      staffNotifications = incoming;
+      incoming.forEach(n => knownStaffNotifIds.add(n._id));
+
+      const unread = staffNotifications.filter(n => !n.read).length;
+      const badge = document.getElementById('notifications-badge');
+      if (badge) {
+        badge.textContent = unread;
+        badge.style.display = unread ? 'inline-flex' : 'none';
+      }
+
+      if (document.getElementById('panel-notifications')?.classList.contains('active')) {
+        renderStaffNotifications();
+      }
+    }, e => console.warn('staff notifications listener:', e));
+}
+
+function renderStaffNotifications() {
+  const con = document.getElementById('staff-notifications-list');
+  if (!con) return;
+
+  if (!staffNotifications.length) {
+    con.innerHTML = `<div class="empty-state"><div class="emoji">🔔</div><h3>No notifications</h3></div>`;
+    return;
+  }
+
+  con.innerHTML = staffNotifications.map(n => `
+    <div style="background:${n.read ? 'var(--s2)' : 'var(--gold-d)'};border:1px solid var(--bd);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
+        <div style="font-weight:700;font-size:15px;">${escHtml(n.title || 'Notification')}</div>
+        <span style="font-size:12px;color:var(--td);">${fmtStaffNotifTs(n.createdAt)}</span>
+        ${!n.read ? `<span class="badge badge-amber">New</span>` : ''}
+      </div>
+      <div style="font-size:13px;color:var(--tm);line-height:1.5;margin-bottom:12px;">${escHtml(n.message || '')}</div>
+      ${!n.read ? `<button class="btn btn-ghost btn-sm" onclick="markStaffNotificationRead('${n._id}')">Mark Read</button>` : ''}
+    </div>
+  `).join('');
+}
+
+async function markStaffNotificationRead(id) {
+  await db.collection('staff_notifications').doc(id).update({ read: true });
+}
+
+async function markAllStaffNotificationsRead() {
+  const unread = staffNotifications.filter(n => !n.read);
+  if (!unread.length) return;
+
+  const batch = db.batch();
+  unread.forEach(n => batch.update(db.collection('staff_notifications').doc(n._id), { read: true }));
+  await batch.commit();
+
+  toast('Notifications marked read', 'success');
+}
+
+function playChime() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [440, 554, 659].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.18);
+      gain.gain.linearRampToValueAtTime(0.25, ctx.currentTime + i * 0.18 + 0.05);
+      gain.gain.linearRampToValueAtTime(0, ctx.currentTime + i * 0.18 + 0.35);
+      osc.start(ctx.currentTime + i * 0.18);
+      osc.stop(ctx.currentTime + i * 0.18 + 0.4);
+    });
+  } catch(e) {}
+}
+  
 </script>
 </body>
 </html>
