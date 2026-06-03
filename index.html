@@ -279,6 +279,7 @@ body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif
     <div class="tb-role">Rider</div>
     <div class="tb-spacer"></div>
     <div class="tb-time" id="tb-time"></div>
+    <button onclick="callAdminEmergency()" style="background:var(--red-d);color:var(--red);border:1px solid rgba(192,64,64,.35);border-radius:var(--rs);padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">🚨 Call Admin</button>
     <button class="tb-logout" onclick="riderLogout()">Sign Out</button>
   </div>
 
@@ -1486,7 +1487,35 @@ function playChime() {
     });
   } catch(e) {}
 }
-  
+  // ── EMERGENCY CALL TO ADMIN ───────────────────
+let _emergencyCooldown = false;
+
+async function callAdminEmergency() {
+  if (!db || !currentUser) { toast('Not connected', 'error'); return; }
+  if (_emergencyCooldown) { toast('Please wait before calling again', 'error'); return; }
+
+  if (!confirm('Send emergency alert to admin?')) return;
+
+  try {
+    await db.collection('staff_calls').add({
+      type:         'rider_to_admin',
+      callerUid:    currentUser.uid,
+      callerName:   currentEmployee?.name || 'Rider',
+      status:       'ringing',
+      acknowledged: false,
+      calledAt:     firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    toast('🚨 Admin has been alerted!', 'success');
+
+    // 60 second cooldown so rider can't spam
+    _emergencyCooldown = true;
+    setTimeout(() => { _emergencyCooldown = false; }, 60000);
+
+  } catch(e) {
+    toast('Failed to send alert: ' + e.message, 'error');
+  }
+}
 </script>
 </body>
 </html>
