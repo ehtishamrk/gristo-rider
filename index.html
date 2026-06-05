@@ -556,8 +556,18 @@ firebase.auth().onAuthStateChanged(async user => {
       return;
     }
 
-    const empSnap = await db.collection('employees').doc(user.uid).get();
+const empSnap = await db.collection('employees').doc(user.uid).get();
     currentEmployee = empSnap.exists ? empSnap.data() : { name: user.email, role:'rider' };
+
+    const _sessionToken = 'r-' + Date.now() + '-' + Math.random().toString(36).slice(2,8);
+    await db.collection('employees').doc(user.uid).set({ sessionToken: _sessionToken }, { merge: true });
+    db.collection('employees').doc(user.uid).onSnapshot(snap => {
+      if (!snap.exists) return;
+      if (snap.data().sessionToken !== _sessionToken) {
+        firebase.auth().signOut();
+        showSessionKickedAlert();
+      }
+    });
 
     document.getElementById('login-overlay').style.display = 'none';
     document.getElementById('rider-app').style.display     = 'flex';
@@ -588,6 +598,14 @@ ordersUnsub = presenceUnsub = breakUnsub = freezeUnsub = staffNotificationsUnsub
   dismissAlert();
 }
 
+function showSessionKickedAlert() {
+  const o = document.createElement('div');
+  o.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.93);z-index:5000;display:flex;align-items:center;justify-content:center;text-align:center;padding:32px;';
+  o.innerHTML = '<div><div style="font-size:52px;margin-bottom:16px;">📵</div><div style="font-family:\'Cormorant Garamond\',serif;font-size:26px;color:var(--gold);margin-bottom:8px;">Session Ended</div><div style="color:var(--tm);font-size:14px;">You logged in from another tab or device.</div></div>';
+  document.body.appendChild(o);
+  setTimeout(() => location.reload(), 3000);
+}
+  
 function showFreezeAlert() {
   dismissAlert();
   const o = document.createElement('div');
