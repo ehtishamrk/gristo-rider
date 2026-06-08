@@ -63,13 +63,49 @@ body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif
 #rider-app { display:none; height:100vh; flex-direction:column; overflow:hidden; }
 
 /* ── TOPBAR ── */
-#topbar { background:var(--s1); border-bottom:1px solid var(--bd); padding:0 18px; height:54px; display:flex; align-items:center; gap:12px; flex-shrink:0; z-index:10; }
-.tb-brand { font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:700; color:var(--gold); letter-spacing:3px; }
-.tb-role { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--td); background:var(--s3); border:1px solid var(--bd); border-radius:100px; padding:3px 10px; }
+#topbar {
+  background: var(--s1); border-bottom: 1px solid var(--bd);
+  padding: 0 18px; height: 56px; display: flex; align-items: center;
+  gap: 12px; flex-shrink: 0; position: relative; z-index: 10;
+}
+.tb-logo-wrap { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.tb-logo-wrap img { max-height: 28px; max-width: 100px; object-fit: contain; }
+.tb-logo-wrap .tb-name { font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:700; color:var(--gold); letter-spacing:2px; line-height:1; }
+.tb-role { font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--td); background:var(--s3); border:1px solid var(--bd); border-radius:100px; padding:3px 10px; white-space:nowrap; }
 .tb-spacer { flex:1; }
-.tb-time { font-size:12px; color:var(--td); font-family:'DM Mono',monospace; }
+.tb-time { font-size:11px; color:var(--td); font-family:'DM Mono',monospace; white-space:nowrap; }
+.tb-icon-btn { width:36px; height:36px; border-radius:10px; border:1px solid var(--bd); background:var(--s2); color:var(--tm); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .15s; flex-shrink:0; }
+.tb-icon-btn:hover { background:var(--s3); color:var(--text); }
+.tb-icon-btn svg { width:16px; height:16px; }
 .tb-logout { font-size:12px; color:var(--tm); background:none; border:none; cursor:pointer; padding:5px 10px; border-radius:var(--rs); transition:background .15s; }
 .tb-logout:hover { background:var(--s3); }
+
+/* ── NAV TABS ── */
+#nav-tabs { background:var(--s1); border-bottom:1px solid var(--bd); display:flex; padding:0 18px; gap:0; overflow-x:auto; scrollbar-width:none; flex-shrink:0; }
+#nav-tabs::-webkit-scrollbar { display:none; }
+.nav-tab { display:flex; align-items:center; gap:7px; padding:0 16px; height:44px; border:none; background:transparent; color:var(--tm); font-size:12.5px; font-weight:500; cursor:pointer; white-space:nowrap; border-bottom:2px solid transparent; margin-bottom:-1px; transition:all .18s; font-family:'DM Sans',sans-serif; }
+.nav-tab svg { width:15px; height:15px; flex-shrink:0; }
+.nav-tab.active { color:var(--gold); border-bottom-color:var(--gold); font-weight:600; }
+.nav-tab:hover:not(.active) { color:var(--text); background:rgba(255,255,255,.03); }
+.tab-badge { background:var(--red); color:#fff; font-size:9px; font-weight:700; min-width:16px; height:16px; border-radius:100px; display:inline-flex; align-items:center; justify-content:center; padding:0 4px; }
+
+/* ── PROFILE DRAWER ── */
+#profile-drawer { position:fixed; inset:0; z-index:600; pointer-events:none; }
+#profile-drawer.open { pointer-events:all; }
+#profile-backdrop { position:absolute; inset:0; background:rgba(0,0,0,0); transition:background .25s; cursor:pointer; }
+#profile-drawer.open #profile-backdrop { background:rgba(0,0,0,0.65); }
+#profile-panel { position:absolute; top:0; right:0; bottom:0; width:320px; max-width:92vw; background:var(--s1); border-left:1px solid var(--bd); transform:translateX(100%); transition:transform .28s cubic-bezier(.4,0,.2,1); display:flex; flex-direction:column; overflow:hidden; }
+#profile-drawer.open #profile-panel { transform:translateX(0); }
+.profile-header { padding:24px 20px 20px; border-bottom:1px solid var(--bd); flex-shrink:0; display:flex; align-items:flex-start; gap:14px; }
+.profile-avatar-lg { width:52px; height:52px; border-radius:14px; background:var(--gold-d); border:1px solid rgba(200,146,42,.3); display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:700; color:var(--gold); flex-shrink:0; }
+.profile-name { font-size:16px; font-weight:700; color:var(--text); margin-bottom:2px; }
+.profile-role-pill { display:inline-block; font-size:9px; letter-spacing:1.5px; text-transform:uppercase; font-weight:700; padding:3px 9px; border-radius:100px; background:var(--s3); border:1px solid var(--bd); color:var(--tm); }
+.profile-emp-id { font-size:11px; color:var(--td); margin-top:4px; font-family:'DM Mono',monospace; }
+.profile-body { flex:1; overflow-y:auto; padding:20px; }
+.profile-row { margin-bottom:16px; }
+.profile-label { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--td); font-weight:700; margin-bottom:4px; }
+.profile-val { font-size:14px; color:var(--text); }
+.profile-footer { padding:16px 20px; border-top:1px solid var(--bd); flex-shrink:0; }
 
 /* ── STATUS BAR ── */
 #status-bar { padding:10px 18px; display:flex; align-items:center; gap:10px; flex-shrink:0; border-bottom:1px solid var(--bd); background:var(--s2); }
@@ -90,14 +126,6 @@ body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif
 /* ── BREAK REQUEST BANNER ── */
 #break-banner { display:none; background:var(--amber-d); border-bottom:1px solid rgba(200,146,42,.25); padding:10px 18px; font-size:13px; color:var(--amber); flex-shrink:0; text-align:center; }
 #break-banner.show { display:block; }
-
-/* ── NAV TABS ── */
-#nav-tabs { background:var(--s1); border-bottom:1px solid var(--bd); display:flex; padding:0 18px; gap:2px; overflow-x:auto; scrollbar-width:none; flex-shrink:0; }
-#nav-tabs::-webkit-scrollbar { display:none; }
-.nav-tab { padding:11px 16px; border:none; background:transparent; color:var(--tm); font-size:13px; font-weight:500; cursor:pointer; white-space:nowrap; border-bottom:2px solid transparent; margin-bottom:-1px; transition:all .2s; font-family:'DM Sans',sans-serif; display:flex; align-items:center; gap:6px; }
-.nav-tab.active { color:var(--gold); border-bottom-color:var(--gold); font-weight:600; }
-.nav-tab:hover:not(.active) { color:var(--text); }
-.tab-badge { background:var(--red); color:#fff; font-size:9px; font-weight:700; min-width:16px; height:16px; border-radius:100px; display:inline-flex; align-items:center; justify-content:center; padding:0 4px; }
 
 /* ── PANELS ── */
 .panel { display:none; flex:1; overflow-y:auto; padding:16px; }
@@ -279,13 +307,17 @@ body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif
 <!-- ══ RIDER APP ═══════════════════════════════════════════ -->
 <div id="rider-app">
 
-  <!-- TOPBAR -->
+<!-- TOPBAR -->
   <div id="topbar">
-    <div class="tb-brand" id="tb-brand">Restaurant</div>
+    <div class="tb-logo-wrap" id="tb-brand"><span class="tb-name">Restaurant</span></div>
     <div class="tb-role">Rider</div>
     <div class="tb-spacer"></div>
     <div class="tb-time" id="tb-time"></div>
-    <button onclick="callAdminEmergency()" style="background:var(--red-d);color:var(--red);border:1px solid rgba(192,64,64,.35);border-radius:var(--rs);padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">🚨 Call Admin</button>
+    <button class="tb-icon-btn" onclick="openProfile()" title="My Profile">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6">
+        <circle cx="10" cy="7" r="3.5"/><path d="M3 17c0-3.3 3.1-6 7-6s7 2.7 7 6" stroke-linecap="round"/>
+      </svg>
+    </button>
     <button class="tb-logout" onclick="riderLogout()">Sign Out</button>
   </div>
 
@@ -305,23 +337,31 @@ body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif
   </div>
 
   <!-- NAV TABS -->
-  <div id="nav-tabs">
+<div id="nav-tabs">
     <button class="nav-tab active" id="tab-active-btn" onclick="switchTab('active')">
-      🏍 Active <span class="tab-badge" id="active-badge" style="display:none">0</span>
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10" cy="10" r="7"/><path d="M10 6v4l3 2" stroke-linecap="round"/></svg>
+      Active <span class="tab-badge" id="active-badge" style="display:none">0</span>
     </button>
     <button class="nav-tab" id="tab-queue-btn" onclick="switchTab('queue')">
-      📦 Assigned <span class="tab-badge" id="queue-badge" style="display:none">0</span>
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h12l-1.5 8H5.5z"/><circle cx="8" cy="16" r="1.5"/><circle cx="14" cy="16" r="1.5"/></svg>
+      Assigned <span class="tab-badge" id="queue-badge" style="display:none">0</span>
     </button>
     <button class="nav-tab" id="tab-history-btn" onclick="switchTab('history')">
-      📋 History
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="14" height="14" rx="2"/><path d="M7 7h6M7 10h6M7 13h4"/></svg>
+      History
     </button>
-<button class="nav-tab" id="tab-earnings-btn" onclick="switchTab('earnings')">
-  💰 Earnings
-</button>
-
-<button class="nav-tab" id="tab-notifications-btn" onclick="switchTab('notifications')">
-  🔔 Notifications <span class="tab-badge" id="notifications-badge" style="display:none">0</span>
-</button>
+    <button class="nav-tab" id="tab-earnings-btn" onclick="switchTab('earnings')">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 3v14M6 6h5.5a2.5 2.5 0 010 5H7m0 0h3.5a2.5 2.5 0 010 5H6"/></svg>
+      Earnings
+    </button>
+    <button class="nav-tab" id="tab-notifications-btn" onclick="switchTab('notifications')">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 3a5 5 0 015 5v3l1.5 2.5H3.5L5 11V8a5 5 0 015-5z"/><path d="M8.5 16a1.5 1.5 0 003 0"/></svg>
+      Alerts <span class="tab-badge" id="notifications-badge" style="display:none">0</span>
+    </button>
+    <button class="nav-tab" id="tab-profile-btn" onclick="openProfile()">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10" cy="7" r="3.5"/><path d="M3 17c0-3.3 3.1-6 7-6s7 2.7 7 6" stroke-linecap="round"/></svg>
+      My Profile
+    </button>
   </div>
 
   <!-- ── ACTIVE PANEL ─── -->
@@ -380,6 +420,33 @@ body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif
   <div style="font-family:'Cormorant Garamond',serif;font-size:28px;color:var(--gold);margin-bottom:8px;">Break Approved!</div>
   <div style="color:var(--tm);font-size:14px;margin-bottom:28px;">Your manager has approved your break.<br>Enjoy your rest.</div>
   <button class="abtn abtn-green" style="min-width:180px;" onclick="endBreak()">✅ I'm Back — End Break</button>
+</div>
+
+<!-- PROFILE DRAWER -->
+<div id="profile-drawer">
+  <div id="profile-backdrop" onclick="closeProfile()"></div>
+  <div id="profile-panel">
+    <div class="profile-header">
+      <div class="profile-avatar-lg" id="pf-avatar">?</div>
+      <div>
+        <div class="profile-name" id="pf-name">—</div>
+        <div><span class="profile-role-pill" id="pf-role">Rider</span></div>
+        <div class="profile-emp-id" id="pf-empid">—</div>
+      </div>
+    </div>
+    <div class="profile-body">
+      <div class="profile-row"><div class="profile-label">Email</div><div class="profile-val" id="pf-email">—</div></div>
+      <div class="profile-row"><div class="profile-label">Phone</div><div class="profile-val" id="pf-phone">—</div></div>
+      <div class="profile-row"><div class="profile-label">Joined</div><div class="profile-val" id="pf-joined">—</div></div>
+      <div class="profile-row"><div class="profile-label">Address</div><div class="profile-val" id="pf-address">—</div></div>
+      <div style="font-size:11px;color:var(--td);background:var(--s2);border:1px solid var(--bd);border-radius:var(--rs);padding:10px 12px;margin-top:8px;">
+        🔒 To update your details, contact your manager.
+      </div>
+    </div>
+    <div class="profile-footer">
+      <button class="btn btn-ghost" style="width:100%;padding:10px;" onclick="closeProfile()">Close</button>
+    </div>
+  </div>
 </div>
 
 <!-- TOAST -->
@@ -634,6 +701,28 @@ function riderLogout() {
   firebase.auth().signOut();
 }
 
+  // ── PROFILE DRAWER ────────────────────────────
+function openProfile() {
+  const user = currentUser;
+  const emp  = currentEmployee || {};
+  const name = emp.name || user?.email || '—';
+  const initials = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const joined = emp.joining ? new Date(emp.joining).toLocaleDateString([],{month:'long',day:'numeric',year:'numeric'}) : '—';
+
+  document.getElementById('pf-avatar').textContent = initials;
+  document.getElementById('pf-name').textContent   = name;
+  document.getElementById('pf-role').textContent   = 'Kitchen';
+  document.getElementById('pf-empid').textContent  = emp.employeeId || '—';
+  document.getElementById('pf-email').textContent  = emp.email || user?.email || '—';
+  document.getElementById('pf-phone').textContent  = emp.phone   || '—';
+  document.getElementById('pf-joined').textContent = joined;
+  document.getElementById('pf-address').textContent = emp.address || '—';
+  document.getElementById('profile-drawer').classList.add('open');
+}
+function closeProfile() {
+  document.getElementById('profile-drawer').classList.remove('open');
+}
+  
 // ── IDLE / TAB-CLOSE WATCHER ──────────────────
 let _idleTimer = null;
 let _tabHideTimer = null;
