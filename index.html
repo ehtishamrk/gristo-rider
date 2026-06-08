@@ -8,6 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <title>Rider Portal</title>
+<link rel="icon" id="favicon" type="image/png" href="">
 <link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -43,7 +44,9 @@ body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif
 /* ── LOGIN ── */
 #login-overlay { position:fixed; inset:0; background:var(--bg); z-index:1000; display:flex; align-items:center; justify-content:center; }
 .login-wrap { width:380px; max-width:92vw; background:var(--s1); border:1px solid var(--bd); border-radius:20px; padding:48px 36px; text-align:center; }
-.login-logo { font-family:'Cormorant Garamond',serif; font-size:42px; font-weight:700; color:var(--gold); letter-spacing:6px; margin-bottom:4px; }
+.login-logo { font-family:'Cormorant Garamond',serif; font-size:42px; font-weight:700; color:var(--gold); letter-spacing:6px; margin-bottom:4px; display:flex; align-items:center; justify-content:center; min-height:48px; }
+.login-logo img { max-height:64px; max-width:200px; object-fit:contain; }
+.tb-brand img { max-height:28px; max-width:110px; object-fit:contain; vertical-align:middle; }
 .login-role { font-size:10px; letter-spacing:3.5px; text-transform:uppercase; color:var(--td); margin-bottom:36px; }
 .login-field { width:100%; background:var(--s2); border:1px solid var(--bd); border-radius:var(--r); color:var(--text); font-size:15px; font-family:'DM Sans',sans-serif; padding:13px 16px; outline:none; transition:border-color .2s; margin-bottom:12px; }
 .login-field:focus { border-color:rgba(200,146,42,.45); }
@@ -699,23 +702,35 @@ function writePresenceFull(riderStatus, currentOrderId, online) {
 // ══ SETTINGS LISTENER ══════════════════════════════════════
 function applyRestaurantName(name) {
   const restaurantName = name || localStorage.getItem('restaurantName') || 'Restaurant';
-
   const loginLogo = document.getElementById('login-logo');
   const tbBrand = document.getElementById('tb-brand');
+  const logo = settings.restaurantLogo || '';
 
   if (loginLogo) {
-    loginLogo.textContent = restaurantName;
+    loginLogo.innerHTML = logo ? `<img src="${logo}" alt="${restaurantName}">` : restaurantName;
     loginLogo.style.visibility = 'visible';
   }
-
   if (tbBrand) {
-    tbBrand.textContent = restaurantName;
+    tbBrand.innerHTML = logo ? `<img src="${logo}" alt="${restaurantName}">` : name;
   }
-
   const kdsBrand = document.getElementById('kds-brand');
   if (kdsBrand) kdsBrand.textContent = restaurantName + ' - Kitchen Display';
-
   document.title = restaurantName + ' - Rider Portal';
+}
+
+function applyLogo(base64) {
+  const loginLogo = document.getElementById('login-logo');
+  const tbBrand = document.getElementById('tb-brand');
+  const name = settings.restaurantName || localStorage.getItem('restaurantName') || 'Restaurant';
+  if (loginLogo) {
+    loginLogo.innerHTML = base64 ? `<img src="${base64}" alt="${name}">` : name;
+    loginLogo.style.visibility = 'visible';
+  }
+  if (tbBrand) {
+    tbBrand.innerHTML = base64 ? `<img src="${base64}" alt="${name}">` : name;
+  }
+  const fav = document.getElementById('favicon');
+  if (fav && base64) fav.setAttribute('href', base64);
 }
 
 function startSettingsListener() {
@@ -729,11 +744,11 @@ function startSettingsListener() {
 
     settings = { ...settings, ...snap.data() };
 
-    if (settings.restaurantName) {
+if (settings.restaurantName) {
       localStorage.setItem('restaurantName', settings.restaurantName);
       applyRestaurantName(settings.restaurantName);
     }
-
+    applyLogo(settings.restaurantLogo || null);
     if (settings.brandColors) {
       applyBrandColors(settings.brandColors);
     }
