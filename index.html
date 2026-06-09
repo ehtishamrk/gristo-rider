@@ -1275,7 +1275,7 @@ function buildCard(container, o, ctx) {
   card.className = `order-card status-${o.status}`;
 
   // Items
-  const itemsHTML = (o.items||[]).map(i =>
+const itemsHTML = (o.items||[]).filter(i => !i.voided).map(i =>
     `<div class="oc-item-row">
       <div class="oc-qty">${i.qty||1}</div>
       <div>
