@@ -725,9 +725,8 @@ function closeProfile() {
   
 // ── IDLE / TAB-CLOSE WATCHER ──────────────────
 let _idleTimer = null;
-let _tabHideTimer = null;
 let _watcherStarted = false;
-const IDLE_MS = 30 * 60 * 1000; // 30 minutes
+const IDLE_MS = 60 * 60 * 1000; // 1 hour
 
 function startIdleWatcher(logoutFn) {
   if (_watcherStarted) {
@@ -747,21 +746,14 @@ function startIdleWatcher(logoutFn) {
     document.addEventListener(evt, resetIdle, { passive: true });
   });
 
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-      _tabHideTimer = setTimeout(() => _logout(), 5 * 60 * 1000);
-    } else {
-      clearTimeout(_tabHideTimer);
-      resetIdle();
-    }
-  });
+  // Logout on actual tab/window close only (not on tab switch)
+  window.addEventListener('pagehide', () => _logout(), { once: true });
 
   resetIdle();
 }
 
 function stopIdleWatcher() {
   clearTimeout(_idleTimer);
-  clearTimeout(_tabHideTimer);
   _watcherStarted = false;
 }
   
