@@ -309,8 +309,9 @@ body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif
 
 <!-- TOPBAR -->
   <div id="topbar">
-    <div class="tb-logo-wrap" id="tb-brand"><span class="tb-name">Restaurant</span></div>
+<div class="tb-logo-wrap" id="tb-brand"><span class="tb-name">Restaurant</span></div>
     <div class="tb-role">Rider</div>
+    <div id="tb-emp-name" style="font-size:12px;color:var(--tm);font-weight:500;white-space:nowrap;margin-left:auto;padding-right:4px;"></div>
     <div class="tb-spacer"></div>
     <div class="tb-time" id="tb-time"></div>
     <button class="tb-icon-btn" onclick="openProfile()" title="My Profile">
@@ -631,7 +632,7 @@ firebase.auth().onAuthStateChanged(async user => {
 
 const empSnap = await db.collection('employees').doc(user.uid).get();
     currentEmployee = empSnap.exists ? empSnap.data() : { name: user.email, role:'rider' };
-
+const _empEl = document.getElementById('tb-emp-name'); if (_empEl) _empEl.textContent = currentEmployee.name || '';
 if (window._sessionUnsub) { window._sessionUnsub(); window._sessionUnsub = null; }
     const _sessionToken = 'r-' + Date.now() + '-' + Math.random().toString(36).slice(2,8);
     await db.collection('employees').doc(user.uid).set({ sessionToken: _sessionToken }, { merge: true });
